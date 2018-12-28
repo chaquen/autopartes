@@ -1,5 +1,15 @@
 @extends('admin.layout')
 
+@section('header')
+	<h1>
+	    Ordenes asignadas
+	    <small> En esta sección estan las ordenes asignadas.</small>
+  	</h1>
+  	<ol class="breadcrumb">
+	    <li class="active">Ordenes</li>
+  	</ol>
+@stop
+
 @section('contenido')
 	<div class="box">
 	    <div class="box-header">

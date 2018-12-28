@@ -81,7 +81,7 @@ desired effect
               <!-- The user image in the navbar-->
               <img src="{{asset('adminLte/img/user2-160x160.jpg')}}" class="user-image" alt="User Image">
               <!-- hidden-xs hides the username on small devices so only the image appears. -->
-              <span class="hidden-xs">Nombre del Usuario</span>
+              <span class="hidden-xs">{{ auth()->user()->name }}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- The user image in the menu -->
@@ -89,7 +89,7 @@ desired effect
                 <img src="{{asset('adminLte/img/user2-160x160.jpg')}}" class="img-circle" alt="User Image">
 
                 <p>
-                  Nombre del Usuario
+                  {{ auth()->user()->name }}
                 </p>
               </li>
               
@@ -118,7 +118,7 @@ desired effect
           <img src="{{asset('adminLte/img/user2-160x160.jpg')}}" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p>{{-- auth()->user()->name --}}Nombre Usuario</p>
+          <p>{{ auth()->user()->name }}</p>
           <!-- Status -->
         </div>
       </div>
@@ -195,14 +195,7 @@ desired effect
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <h1>
-        Page Header
-        <small>Optional description</small>
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-        <li class="active">Here</li>
-      </ol>
+      @yield('header')
     </section>
 
     <!-- Main content -->

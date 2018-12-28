@@ -127,7 +127,7 @@ class OrdenesController extends Controller
     public function detalleAsignada($orden_id)
     {   
         //Seleccionamos los items correspondientes al id que traemos como parametro.
-        $detalleOrden = itemOrden::select('ordens.id','sedes.nombre','item_ordens.estadoItem_id','item_ordens.sede_id','item_ordens.id','marca','referencia','descripcion','cantidad','comentarios','pesoLb','costoUnitario')
+        $detalleOrden = itemOrden::select('ordens.id','sedes.nombre','item_ordens.estadoItem_id','item_ordens.sede_id','item_ordens.id','marca','referencia','descripcion','cantidad','comentarios','pesoLb','costoUnitario','margenUsa')
         ->join('ordens','item_ordens.orden_id','=','ordens.id')
         ->join('sedes','item_ordens.sede_id','=','sedes.id')
         ->where('ordens.id','=',$orden_id)
@@ -153,18 +153,17 @@ class OrdenesController extends Controller
             if(isset($request['itemDividido'.$value]))
             {
                 //dd($request['itemDividido'].$value);
-                var_dump($request['itemDividido'.$value]);
-                //Item que se divide
-                echo "El item que se dividio fue el ".$value;
-                echo "<br>";
+                
                 //Hallamos el tamaño o cantidad de item en los que se dividio
                 $tamaño = count($request['itemDividido'.$value]);
                 echo "El tamaño del arreglo es ".$tamaño;
 
                 //dd('detener');
                 //Vamos a crear los item segun la cantidad necesaria
-                foreach ($request['itemDividido'.$value] as $key => $values) {
+                foreach ($request['itemDividido'.$value] as $k => $values) {
                     $cantidadItem = $values;
+
+                    //dd($request['sedeId']);
 
                     $item = new ItemOrden;
 
@@ -176,7 +175,10 @@ class OrdenesController extends Controller
                     $item->referencia = $request['referencia'][$key];
                     $item->descripcion = $request['descripcion'][$key];
                     $item->cantidad = $cantidadItem;
+                    $item->pesoLb = $request['pesoLb'][$key];
                     $item->comentarios = $request['comentarios'][$key];
+                    $item->costoUnitario = $request['costoUnitario'][$key];
+                    $item->margenUsa = $request['margenUsa'][$key];
                     $item->save();
                 }
 
@@ -211,7 +213,7 @@ class OrdenesController extends Controller
 
             if($value!=null)
             {
-                 $arr['margenUsa'] = $value;
+                 $arr['margenUsa'] = $request['margenUsa'][$key];
             }else
             {
                 unset($arr['margenUsa']);

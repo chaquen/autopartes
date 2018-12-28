@@ -28,6 +28,8 @@
 		        		<th>Costo Total Flete</th>
 		        		<th>Costo Unitario</th>
 		        		<th>Margen USA</th>
+		        		<th>Precio Unitario USD</th>
+		        		<th>Precio Total USD</th>
 		        		<th>Dividir el Item</th>
 		        		
 		        		<!--<th>Venta Unitario</th>
@@ -98,17 +100,32 @@
 			        				<label id="costoTotalFlete{{$detalle->id}}">{{$costoTotalFlete}}</label>
 			        			</td>
 		        				<td>
-		        					<input name="costoUnitario[]" placeholder="{{$detalle->costoUnitario}}">
+		        					<input name="costoUnitario[]" value="{{$detalle->costoUnitario}}">
 		        				</td>  			
-			        			<td><input name="margenUsa[]" placeholder="{{$detalle->margenUsa}}"></td>
+			        			<td>
+			        				<input name="margenUsa[]" value="{{$detalle->margenUsa}}"></td>
+			        			</td>
+			        				@php
+			        					$a = $detalle->costoUnitario;
+			        					$b = $detalle->margenUsa;
+			        					$prom = $a * $b / 100;
+
+			        					$c = $costoTotalFlete;
+			        					$d = $detalle->cantidad;
+
+			        					$e = $c / $d;
+
+			        					$precioVenta = $a+$prom+$e;
+			        				@endphp
+		        				<td>
+		        					<label>{{ $precioVenta }}</label>
+		        				</td>
+		        				<td></td>
 			        			<td>
 			        				@if($detalle->cantidad > 1)
 			        					<button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#exampleModalCenter{{ $detalle->id }}">Dividir</button>	
-					    			@endif
-			        				
-			        			</td>
-			        			<td>
-			        				<div class="modal fade" id="exampleModalCenter{{ $detalle->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+					    			@endif	
+					    			<div class="modal fade" id="exampleModalCenter{{ $detalle->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 									  	<div class="modal-dialog modal-dialog-centered" role="document">
 										    <div class="modal-content">
 										      <div class="modal-header">
@@ -139,11 +156,9 @@
 										      </div>
 										    </div>
 							  			</div>
-									</div>
+									</div>		        				
 			        			</td>
-			        			<td>
-			        				
-			        			</td>
+			        			
 			        			<td><input type="hidden" name="detalle_id[]" value="{{$detalle->id}}"></td>
 			        		</tr>
 			        	@endforeach
@@ -211,7 +226,7 @@
 
     	function crearDivisiones()
     	{
-    		
+
     	}
     </script>
     

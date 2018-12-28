@@ -1,5 +1,15 @@
 @extends('admin.layout')
 
+@section('header')
+	<h1>
+	    Ordenes sin asignar
+	    <small> En esta sección podra asignar un usuario a la orden para que la gestione</small>
+  	</h1>
+  	<ol class="breadcrumb">
+	    <li class="active">Ordenes</li>
+  	</ol>
+@stop
+
 @section('contenido')
 	<div class="box">
 	    <div class="box-header">

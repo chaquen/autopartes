@@ -71,7 +71,6 @@
 
 
     <a href="{{ route('password.request') }}">Olvide mi contraseña</a><br>
-    <a href="{{ route('register') }}" class="text-center">Registro usuario nuevo</a>
 
   </div>
   <!-- /.login-box-body -->
