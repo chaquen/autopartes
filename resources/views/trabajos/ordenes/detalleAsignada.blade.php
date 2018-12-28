@@ -3,7 +3,7 @@
 @section('contenido')
 	<div class="box box-warning">
 	    <div class="box-header col-md-12">
-	      <h3 class="box-title">Detalles de la Orden # </h3>
+	      <h3 class="box-title">Detalles de la Orden - <b>{{$orden_id}}</b></h3>
 	    </div>
 	    <!-- /.box-header -->
 
@@ -71,6 +71,7 @@
 			        			</td>
 			        			<td>
 			        				{{ $detalle->cantidad }}
+			       	 				<input type="hidden" id="cantidad{{ $detalle->id }}" name="cantidad[]" value="{{ $detalle->cantidad }}">
 			        			</td>
 			        			<td>
 			        				{{ $detalle->comentarios }}
@@ -101,10 +102,8 @@
 		        				</td>  			
 			        			<td><input name="margenUsa[]" placeholder="{{$detalle->margenUsa}}"></td>
 			        			<td>
-			        				@if($detalle->cantidad <= 1)
-									    				
-					    			@else
-					    				<button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#exampleModalCenter{{ $detalle->id }}">Dividir</button>
+			        				@if($detalle->cantidad > 1)
+			        					<button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#exampleModalCenter{{ $detalle->id }}">Dividir</button>	
 					    			@endif
 			        				
 			        			</td>
@@ -114,6 +113,7 @@
 										    <div class="modal-content">
 										      <div class="modal-header">
 										        <h5 class="modal-title" id="exampleModalCenterTitle">División del Item {{ $detalle->id }}</h5>
+										        <h5>Cantidad del Item {{ $detalle->cantidad }}</h5>
 										        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 										          <span aria-hidden="true">&times;</span>
 										        </button>
@@ -121,18 +121,21 @@
 										      <div class="modal-body">
 										        <div class="form-group">
 									    			<label>¿En cuantos Items, desea dividirlo?</label>
-									    			<input name="itemDiv" id="itemDiv{{ $detalle->id }}" class="form-control" placeholder="Ingrese la cantidad" />
+									    			<input type="number" name="itemDiv" id="itemDiv{{ $detalle->id }}" class="form-control" placeholder="Ingrese la cantidad"/>
+
 									    		</div>
+									    		
 									    		<div class="form-group">
 									    			<input class="btn btn-warning" type="button" value="Dividir Item" onclick="dividirItem('itemDiv{{ $detalle->id }}', '{{ $detalle->id }}')">
 									    		</div>
+
 									    		<table id="body_table{{ $detalle->id }}">
 									    			
 									    		</table>
 										      </div>
 										      <div class="modal-footer">
 										        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-										        <button type="button" class="btn btn-primary">Aceptar</button>
+										        <button type="button" class="btn btn-primary" onclick="crearDivisiones()">Aceptar</button>
 										      </div>
 										    </div>
 							  			</div>
@@ -172,27 +175,43 @@
     	function dividirItem(itemDiv, detalle_id)
     	{
     		console.log(itemDiv);
-    		console.log(document.getElementById(itemDiv));
-    		console.log(document.getElementById(itemDiv).value);
-	        var t = document.getElementById('body_table'+detalle_id);
-	        //limpio lo que tenia en la tabla
-	        t.innerHTML="";
-	        for(i = 0; i < document.getElementById(itemDiv).value; i++)
-	        {
-	        	//creo un tr
-	            var tr = document.createElement('tr');  
-	            //creo un td
-	            var td = document.createElement('td');
-	            //creo el input
-	            var hd = document.createElement('input');
-	            hd.setAttribute('type','text');
-	            hd.setAttribute('name','itemDividido'+detalle_id+'[]');
+    		console.log(detalle_id);
+    		console.log('cantidad'+detalle_id);
+    		console.log(Number(document.getElementById(itemDiv).value));
 
-	            td.appendChild(hd);
-	            tr.appendChild(td);
-	            t.appendChild(tr);
+    		if( Number(document.getElementById(itemDiv).value) > 1 && Number(document.getElementById(itemDiv).value) <= Number(document.getElementById('cantidad'+detalle_id).value) )
+        	{
+        		console.log(itemDiv);
+	    		console.log(document.getElementById(itemDiv));
+	    		console.log(document.getElementById(itemDiv).value);
+		        var t = document.getElementById('body_table'+detalle_id);
+		        //limpio lo que tenia en la tabla
+		        t.innerHTML="";
+		        
+		        for(i = 0; i < document.getElementById(itemDiv).value; i++)
+		        {
+		        	//creo un tr
+		            var tr = document.createElement('tr');  
+		            //creo un td
+		            var td = document.createElement('td');
+		            //creo el input
+		            var hd = document.createElement('input');
+		            hd.setAttribute('type','text');
+		            hd.setAttribute('name','itemDividido'+detalle_id+'[]');
+		            td.appendChild(hd);
+		            tr.appendChild(td);
+		            t.appendChild(tr);
+		        }
+        	}
+        	else
+        	{
+        		alert('El numero tiene que ser mayor a 1 y menor o igual a '+Number(document.getElementById('cantidad'+detalle_id).value))
+        	}   		
+    	}
 
-	        }
+    	function crearDivisiones()
+    	{
+    		
     	}
     </script>
     

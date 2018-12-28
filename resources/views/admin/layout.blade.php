@@ -175,14 +175,14 @@ desired effect
           </ul>
         </li>
         <li class="treeview">
-          <a href="#"><i class="fa fa-file"></i> <span>Usuarios</span>
+          <a href="#"><i class="fa fa-user"></i> <span>Usuarios</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
           <ul class="treeview-menu">
             <li><a href="{{ route('usuarios.index') }}"><i class="fa fa-eye"></i>Ver Usuarios</a></li>
-            <li><a href="{{ route('usuarios.crear') }}"><i class="fa fa-eye"></i>Crear Usuario Cliente</a></li>
+            <li><a href="{{ route('usuarios.crear') }}"><i class="fa fa-pencil"></i>Crear Usuario Cliente</a></li>
           </ul>
         </li>
       </ul>
