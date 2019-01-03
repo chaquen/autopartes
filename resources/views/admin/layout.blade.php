@@ -145,8 +145,11 @@ desired effect
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="{{ route('ordenes.misOrdenes') }}"><i class="fa fa-user"></i>Mis Ordenes</a></li>
+            <li><a href="{{ route('ordenes.misOrdenes') }}"><i class="fa fa-user"></i>Mis Ordenes</a>
+            @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2)
+            </li>
             <li><a href="{{ route('ordenes.crear') }}"><i class="fa fa-pencil"></i>Crear Orden</a></li>
+            @endif  
             @if(auth()->user()->rol_id == 1)
             <li><a href="{{ route('ordenes.index') }}"><i class="fa fa-pencil"></i>Ver Ordenes</a></li>
             <li><a href="{{ route('ordenes.cotizadas') }}"><i class="fa fa-eye"></i>Sin Asignar</a></li>
@@ -186,7 +189,7 @@ desired effect
           </a>
           <ul class="treeview-menu">
             <li><a href="{{ route('usuarios.index') }}"><i class="fa fa-eye"></i>Ver Usuarios</a></li>
-            <li><a href="{{ route('usuarios.crear') }}"><i class="fa fa-pencil"></i>Crear Usuario Cliente</a></li>
+            <li><a href="{{ route('usuarios.crear') }}"><i class="fa fa-pencil"></i>Crear Usuario</a></li>
           </ul>
         </li>
         @endif

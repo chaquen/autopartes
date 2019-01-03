@@ -36,7 +36,7 @@ class OrdenesController extends Controller
         ->join('convencions','ordens.convencion_id','=','convencions.id')
         ->where('user_id','=',$user)
         ->get();
-        dd($ordenes);
+        //dd($ordenes);
         return view('trabajos.ordenes.misOrdenes', compact('ordenes'));
     }
 

@@ -23,6 +23,7 @@ Route::group(['prefix'=>'admin','namespace'=>'Admin','middleware'=>'auth'], func
     Route::get('/', 'UsuariosController@panel');
     Route::get('usuarios', 'UsuariosController@index')->name('usuarios.index');
     Route::get('usuarios/crear','UsuariosController@crear')->name('usuarios.crear');
+    Route::post('usuarios/actualizar','UsuariosController@actualizar_usuario')->name('usuarios.actualizar');
     Route::post('RegistrarUsuario', 'UsuariosController@almacenarUsuario')->name('almacenarUsuario');
 
 });

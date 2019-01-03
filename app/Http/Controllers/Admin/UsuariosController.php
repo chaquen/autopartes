@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Events\UsuarioCreado;
 use App\User;
-
+use App\Rol;
 class UsuariosController extends Controller
 {
 	public function panel()
@@ -27,7 +27,9 @@ class UsuariosController extends Controller
 
     public function crear()
     {
-        return view('admin.usuarios.crear');
+        $roles=Rol::all();
+        
+        return view('admin.usuarios.crear',compact('roles'));
     }
 
     public function almacenarUsuario(Request $request)
@@ -52,5 +54,17 @@ class UsuariosController extends Controller
         //Enviamos el email con las credenciales de acceso
         UsuarioCreado::dispatch($user, $pass);
         return redirect('admin')->with('flash','El usuario fue creado exitosamente');
+    }
+    public function actualizar_usuario(Request $request)
+    {
+     //dd([$request,$request->get('nombre')]);
+
+     User::where('id',$request['id'])->update([
+                                        "name"=>$request->get('nombre'),
+                                        "email"=>$request->get('email'),
+                                        "telefono"=>$request->get('telefono'),
+                                        "direccion"=>$request->get('direccion')
+                                        ]);
+     return back()->with('flash','El usuario fue actualizado exitosamente');                                      
     }
 }
