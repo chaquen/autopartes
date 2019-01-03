@@ -53,7 +53,7 @@ class OrdenesController extends Controller
 		return view('trabajos.ordenes.crear', compact('sedes','convenciones'));
     }
 
-    //metodo para almacenar las nuevas ordenes ..................................................
+    //metodo para almacenar las nuevas ordenes 
     public function almacenar(Request $request)
     {
     	//dd($request);
@@ -91,7 +91,7 @@ class OrdenesController extends Controller
     	return back()->with('flash','La orden ha sido creada');
     }
 
-    //consulta de Ordenes sin Asignar .........................................................
+    //consulta de Ordenes sin Asignar .........................................................//
     public function cotizadas()
     {   
         //$sinUsuario = Orden::where('ordens.estado_id','=',1)->get();

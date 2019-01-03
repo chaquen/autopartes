@@ -96,7 +96,13 @@ desired effect
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-right">
-                  <a href="#" class="btn btn-default btn-flat">Cerrar Sesión</a>
+                  <form method="POST" action="{{route('logout')}}">
+                   {{csrf_field()}}  
+                    <!--<a href="#" class="btn btn-default btn-flat">Cerrar Sesión</a>-->
+                     <button>Cerrar sesión</button> 
+                  </form>
+                  
+
                 </div>
               </li>
             </ul>

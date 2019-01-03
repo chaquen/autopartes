@@ -39,7 +39,7 @@
 		    		</div>
 		    		<div class="form-group col-md-3">
 		    			<label>Cantidad</label>
-		    			<input type="number" name="cantidad" id="cantidad" class="form-control" placeholder="Ingrese la cantidad" required></input>
+		    			<input type="number" min="1" value="1" name="cantidad" id="cantidad" class="form-control" placeholder="Ingrese la cantidad" required></input>
 		    		</div>
 		    		<div class="form-group col-md-6">
 		    			<label>Descripción</label>
@@ -106,7 +106,7 @@
 	        };
 
 	        arreglo.push(ob);
-	        
+	        draw_table();
 	        document.getElementById('sede').value="";
 	        document.getElementById('marca').value="";   
 	        document.getElementById('referencia').value="";
@@ -114,7 +114,6 @@
 	        document.getElementById('descripcion').value="";
 	        document.getElementById('comentarios').value="";
 
-	        draw_table();
 	    }
 
 	    function draw_table(){
@@ -135,7 +134,7 @@
 	            hd.setAttribute('type','hidden');
 	            hd.setAttribute('name','sede[]');
 	            hd.value=arreglo[f].sede;    
-	            label.innerHTML=arreglo[f].sede;
+	            label.innerHTML=document.getElementById("sede").options[document.getElementById('sede').selectedIndex].text;
 	            td.appendChild(hd);
 	            td.appendChild(label);
 	            //agrego el campo a la fila de la tabla
