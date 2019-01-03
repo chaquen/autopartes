@@ -16,6 +16,30 @@ use DB;
 
 class OrdenesController extends Controller
 {
+    public function index()
+    {
+        $ordenes = Orden::select('ordens.id','Trm','ordens.created_at','estado_ordens.nombreEstado','users.name','convencions.nombreConvencion')
+        ->join('estado_ordens','ordens.estado_id','=','estado_ordens.id')
+        ->join('users','ordens.user_id','=','users.id')
+        ->join('convencions','ordens.convencion_id','=','convencions.id')
+        ->get();
+        
+        return view('trabajos.ordenes.index', compact('ordenes'));
+    }
+
+    public function porUsuario()
+    {   
+        $user = auth()->user()->id;
+        $ordenes = Orden::select('ordens.id','Trm','ordens.created_at','estado_ordens.nombreEstado','users.name','convencions.nombreConvencion')
+        ->join('estado_ordens','ordens.estado_id','=','estado_ordens.id')
+        ->join('users','ordens.user_id','=','users.id')
+        ->join('convencions','ordens.convencion_id','=','convencions.id')
+        ->where('user_id','=',$user)
+        ->get();
+        
+        return view('trabajos.ordenes.misOrdenes', compact('ordenes'));
+    }
+
     public function crear()
     {
     	$user = auth()->user()->id;
@@ -24,9 +48,8 @@ class OrdenesController extends Controller
 		$sedes = Sede::select('id','nombre','telefono','direccion','contactoSede')
 		->where('user_id','=',$user)
 		->get();
-		$convenciones = Convencion::select('id','nombre')
-		->get();	
-
+		$convenciones = Convencion::select('id','nombreConvencion')
+		->get();
 		return view('trabajos.ordenes.crear', compact('sedes','convenciones'));
     }
 
@@ -57,6 +80,13 @@ class OrdenesController extends Controller
 	    	$item->save();
     	}
 
+        $historialOrden = new historialOrden;
+        $historialOrden->orden_id = $orden->id;
+        $historialOrden->estadoAnterior_id = 1;
+        $historialOrden->estadoActual_id = 1;
+        $historialOrden->userGestiona_id = auth()->user()->id;
+        $historialOrden->save();
+
     	//retornamos a la vista
     	return back()->with('flash','La orden ha sido creada');
     }
@@ -66,12 +96,12 @@ class OrdenesController extends Controller
     {   
         //$sinUsuario = Orden::where('ordens.estado_id','=',1)->get();
 
-        $sinUsuario = Orden::select('ordens.id','ordens.created_at','estado_ordens.nombre','users.name')
+        $sinUsuario = Orden::select('ordens.id','ordens.created_at','estado_ordens.nombreEstado','users.name')
         ->join('estado_ordens','ordens.estado_id','=','estado_ordens.id')
         ->join('users','ordens.user_id','=','users.id')
         ->where('ordens.estado_id','=','1')
         ->get();
-
+        
         return view('trabajos.ordenes.cotizadas', compact('sinUsuario'));
     }
 
@@ -81,6 +111,7 @@ class OrdenesController extends Controller
         $detalleOrden = itemOrden::select('sedes.nombre','item_ordens.marca','item_ordens.referencia','item_ordens.descripcion','item_ordens.cantidad','item_ordens.comentarios','item_ordens.orden_id')
         ->join('ordens','item_ordens.orden_id','=','ordens.id')
         ->join('sedes','item_ordens.sede_id','=','sedes.id')
+        ->join('historial_Ordens','historial_Ordens.orden_id','ordens.id')
         ->where('ordens.id','=',$orden_id)
         ->get();
         
@@ -97,13 +128,12 @@ class OrdenesController extends Controller
         $historialOrden = new historialOrden;
         $historialOrden->orden_id = $request->get('ordenId');
         $historialOrden->estadoAnterior_id = 1;
-        $historialOrden->estadoActual_id = 2;
+        $historialOrden->estadoActual_id = 1;
         $historialOrden->userGestiona_id = $UserGestiona;
         $historialOrden->userAsignado_id = $request->get('usuarioAsignado');
         $historialOrden->save();
 
         $Orden = Orden::where('id', $request->get('ordenId'))->first();
-        $Orden->estado_id = 2;
         $Orden->update();
 
         return redirect('trabajos/ordenes/cotizadas')->with('flash','El Usuario fue asignado');
@@ -113,11 +143,11 @@ class OrdenesController extends Controller
     public function asignadas()
     {
 
-        $ordenAsignadas = Orden::select('ordens.id','ordens.created_at','estado_ordens.nombre','users.name','historial_Ordens.userAsignado_id')
+        $ordenAsignadas = Orden::select('ordens.id','ordens.created_at','estado_ordens.nombreEstado','users.name','historial_Ordens.userAsignado_id')
             ->join('estado_ordens','ordens.estado_id','=','estado_ordens.id')
             ->join('users','ordens.user_id','=','users.id')
             ->join('historial_Ordens','historial_Ordens.orden_id','ordens.id')
-            ->where('ordens.estado_id','=',2)
+            ->where('historial_Ordens.userAsignado_id','!=','null')
             ->get();
         //dd($ordenAsignadas);                    
         return view('trabajos.ordenes.asignadas', compact('ordenAsignadas'));

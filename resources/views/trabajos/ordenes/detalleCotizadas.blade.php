@@ -28,16 +28,17 @@
 	        			<td>{{ $detalle->descripcion }}</td>
 	        			<td>{{ $detalle->cantidad }}</td>
 	        			<td>{{ $detalle->comentarios }}</td>
-	        			
 	        			<td>
 		        			<a href="" class="btn btn-xs btn-info"><i class="fa fa-pencil"></i></a>
 		        			<a href="" class="btn btn-xs btn-danger"><i class="fa fa-times"></i></a>
 		        		</td>
+		        		
 	        		</tr>
 	        	@endforeach
 	        	
 	        </tbody>
 	      </table>
+	      @if(auth()->user()->rol_id == 1)
 	      <!--Seccion solo para el Administrador-->
 	      <!--Asignar Usuario para gestionar la orden-->
 	      	<form method="POST" action="{{ route('ordenes.asignarUsuarioOrden') }}" class="form">
@@ -62,6 +63,7 @@
 	    		</div>				
 			</form>
 			<!---->
+			@endif
 	    </div>
 	    <!-- /.box-body -->
 	  </div>

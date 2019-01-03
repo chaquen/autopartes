@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
-            <div class="box">
+            <div class="box box-warning">
                 <div class="box-body">
                     <form method="POST" action="{{ route('almacenarUsuario') }}">
                         {{ csrf_field() }}
@@ -118,7 +118,7 @@
                         --}}
                         <div class="form-group mb-0">
                             <div class="col-md-6">
-                                <button type="submit" class="btn btn-primary" >Registrar</button>
+                                <button type="submit" class="btn btn-warning" >Registrar</button>
                                 
 
                             </div>

@@ -15,7 +15,7 @@ class CreateConvencionsTable extends Migration
     {
         Schema::create('convencions', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('nombre');
+            $table->string('nombreConvencion');
             $table->timestamps();
         });
     }

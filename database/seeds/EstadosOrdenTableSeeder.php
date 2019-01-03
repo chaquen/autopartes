@@ -15,19 +15,27 @@ class EstadosOrdenTableSeeder extends Seeder
         EstadoOrden::truncate();
 
         $estadoOrden = new EstadoOrden;
-        $estadoOrden->nombre = "Cotizado";
+        $estadoOrden->nombreEstado = "Por Cotizar";
         $estadoOrden->save();
 
         $estadoOrden = new EstadoOrden;
-        $estadoOrden->nombre = "Ordenado";
+        $estadoOrden->nombreEstado = "Cotizado";
         $estadoOrden->save();
 
         $estadoOrden = new EstadoOrden;
-        $estadoOrden->nombre = "Despachado";
+        $estadoOrden->nombreEstado = "Orden";
         $estadoOrden->save();
 
         $estadoOrden = new EstadoOrden;
-        $estadoOrden->nombre = "Facturado";
+        $estadoOrden->nombreEstado = "Ordenado";
+        $estadoOrden->save();
+
+        $estadoOrden = new EstadoOrden;
+        $estadoOrden->nombreEstado = "Entregado";
+        $estadoOrden->save();
+
+        $estadoOrden = new EstadoOrden;
+        $estadoOrden->nombreEstado = "Cancelado";
         $estadoOrden->save();
     }
 }

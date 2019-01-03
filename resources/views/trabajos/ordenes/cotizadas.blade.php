@@ -11,7 +11,7 @@
 @stop
 
 @section('contenido')
-	<div class="box">
+	<div class="box box-primary">
 	    <div class="box-header">
 	      <h3 class="box-title">Detalle de las Ordenes</h3>
 	    </div>
@@ -30,13 +30,17 @@
 		        	@foreach($sinUsuario as $orden)	
 		        		<tr>
 		        			<td>{{ $orden->id }}</td>
-		        			<td>{{ $orden->nombre }}</td>
+		        			<td>{{ $orden->nombreEstado }}</td>
 		        			<td>{{ $orden->name }}</td>
+		        			
 		        			<td>
 		        				<a href="{{ route('ordenes.detalle', $orden->id) }}" class="btn btn-xs btn-warning"><i class="fa fa-eye"></i> Ver Detalle</a>
+		        				@if(auth()->user()->rol_id == 1)
 			        			<a href="" class="btn btn-xs btn-info"><i class="fa fa-pencil"></i></a>
 			        			<a href="" class="btn btn-xs btn-danger"><i class="fa fa-times"></i></a>
+			        			@endif
 			        		</td>
+			        		
 		        		</tr>
 		        	@endforeach		        	
 		        </tbody>

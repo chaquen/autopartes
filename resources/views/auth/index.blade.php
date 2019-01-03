@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('contenido')
-	<div class="box box-primary">
+	<div class="box box-warning">
 	    <div class="box-header">
 	      <h3 class="box-title">Detalle de los Usuarios</h3>
 	    </div>

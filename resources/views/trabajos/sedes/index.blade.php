@@ -1,7 +1,16 @@
 @extends('admin.layout')
+@section('header')
+	<h1>
+	    Sedes
+	    <small> Detalle de las sedes</small>
+  	</h1>
+  	<ol class="breadcrumb">
+	    <li class="active">Sedes</li>
+  	</ol>
+@stop
 
 @section('contenido')
-	<div class="box box-primary">
+	<div class="box box-success">
 	    <div class="box-header">
 	      <h3 class="box-title">Detalle de las sedes</h3>
 	    </div>
@@ -65,7 +74,7 @@
 									      </div>
 									      <div class="modal-footer">
 									        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-									        <button type="submit" class="btn btn-primary">Editar Sede</button>
+									        <button type="submit" class="btn btn-success">Editar Sede</button>
 									      </div>
 									    </div>
 									</div>								

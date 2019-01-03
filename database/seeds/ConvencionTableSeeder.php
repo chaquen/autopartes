@@ -15,11 +15,11 @@ class ConvencionTableSeeder extends Seeder
         Convencion::truncate();
 
         $convencion = new Convencion;
-        $convencion->nombre = "Dolar";
+        $convencion->nombreConvencion = "Dolar";
         $convencion->save();
 
         $convencion = new Convencion;
-        $convencion->nombre = "Pesos Colombianos";
+        $convencion->nombreConvencion = "Pesos Colombianos";
         $convencion->save();
     }
 }

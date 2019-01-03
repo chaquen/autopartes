@@ -11,7 +11,7 @@
 @stop
 
 @section('contenido')
-	<div class="box">
+	<div class="box box-primary">
 	    <div class="box-header">
 	      <h3 class="box-title">Detalle de las Ordenes</h3>
 	    </div>
@@ -31,7 +31,7 @@
 		        	@foreach($ordenAsignadas as $orden)	
 		        		<tr>
 		        			<td>{{ $orden->id }}</td>
-		        			<td>{{ $orden->nombre }}</td>
+		        			<td>{{ $orden->nombreEstado }}</td>
 		        			<td>{{ $orden->name }}</td>
 		        			<td>{{ $orden->created_at }}</td>
 		        			<td>

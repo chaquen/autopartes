@@ -78,13 +78,13 @@
 						<select class="form-control" name="convencion" id="convencion" required>
 							<option value="">Selecciona el tipo de factura</option>
 							@foreach($convenciones as $conven)
-								<option value="{{ $conven->id }}">- {{ $conven->nombre }}</option>
+								<option value="{{ $conven->id }}">- {{ $conven->nombreConvencion }}</option>
 							@endforeach
 						</select>
 					</div>
 		    		
 		    		<div class="form-group col-md-4">
-		    			<button type="submit" class="btn btn-success">Crear Orden</button>
+		    			<button type="submit" class="btn btn-primary">Crear Orden</button>
 		    		</div>	        
 		    	</form>
 		    </div>	    	    			

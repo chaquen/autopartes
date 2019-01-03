@@ -19,7 +19,7 @@ class CreateHistorialOrdensTable extends Migration
             $table->unsignedInteger('estadoAnterior_id');
             $table->unsignedInteger('estadoActual_id');
             $table->unsignedInteger('userGestiona_id');
-            $table->unsignedInteger('userAsignado_id');
+            $table->unsignedInteger('userAsignado_id')->nullable();
             $table->timestamps();
         });
     }

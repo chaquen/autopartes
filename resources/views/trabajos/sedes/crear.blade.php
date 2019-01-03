@@ -13,7 +13,7 @@
 
 	<div class="row">
 		<div class="col-md-8">
-			<div class="box box-primary">
+			<div class="box box-success">
 			    <div class="box-header">
 			      <h3 class="box-title">Ingrese los datos para crear una nueva sede</h3>
 			    </div>
@@ -38,7 +38,7 @@
 			    			<input name="contacto" class="form-control" placeholder="Ingrese el nombre del contacto"></input>
 			    		</div>
 			    		<div class="form-group">
-			    			<button type="submit" class="btn btn-primary">Crear Sede</button>
+			    			<button type="submit" class="btn btn-success">Crear Sede</button>
 			    		</div>
 
 			    	</div>

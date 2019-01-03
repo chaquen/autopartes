@@ -31,6 +31,8 @@ Route::group(['prefix'=>'admin','namespace'=>'Admin','middleware'=>'auth'], func
 Route::group(['prefix'=>'trabajos','namespace'=>'Trabajos','middleware'=>'auth'], function(){
 
     //Rutas de las ordenes
+    Route::get('ordenes/index','OrdenesController@index')->name('ordenes.index');
+    Route::get('ordenes/misOrdenes','OrdenesController@porUsuario')->name('ordenes.misOrdenes');
     Route::get('ordenes/crear','OrdenesController@crear')->name('ordenes.crear');
     Route::post('ordenes/almacenar','OrdenesController@almacenar')->name('ordenes.almacenar');
     Route::get('ordenes/cotizadas', 'OrdenesController@cotizadas')->name('ordenes.cotizadas');

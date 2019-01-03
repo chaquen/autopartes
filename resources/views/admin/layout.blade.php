@@ -138,9 +138,15 @@ desired effect
             </span>
           </a>
           <ul class="treeview-menu">
+            <li><a href="{{ route('ordenes.misOrdenes') }}"><i class="fa fa-user"></i>Mis Ordenes</a></li>
             <li><a href="{{ route('ordenes.crear') }}"><i class="fa fa-pencil"></i>Crear Orden</a></li>
+            @if(auth()->user()->rol_id == 1)
+            <li><a href="{{ route('ordenes.index') }}"><i class="fa fa-pencil"></i>Ver Ordenes</a></li>
             <li><a href="{{ route('ordenes.cotizadas') }}"><i class="fa fa-eye"></i>Sin Asignar</a></li>
             <li><a href="{{ route('ordenes.asignadas') }}"><i class="fa fa-eye"></i>Asignadas</a></li>
+            @endif
+            
+            
           </ul>
         </li>
         <li class="treeview">
@@ -154,6 +160,7 @@ desired effect
             <li><a href="{{ route('sedes.index') }}"><i class="fa fa-eye"></i>Ver Sedes</a></li>
           </ul>
         </li>
+        @if(auth()->user()->rol_id == 1)
         <li class="treeview">
           <a href="#"><i class="fa fa-indent"></i> <span>Variables</span>
             <span class="pull-right-container">
@@ -162,16 +169,6 @@ desired effect
           </a>
           <ul class="treeview-menu">
             <li><a href="{{ route('variables.index') }}"><i class="fa fa-eye"></i>Ver variables</a></li>
-          </ul>
-        </li>
-        <li class="treeview">
-          <a href="#"><i class="fa fa-file"></i> <span>Factura</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li><a href="{{-- route('variables.index') --}}"><i class="fa fa-eye"></i>Crear Facturas</a></li>
           </ul>
         </li>
         <li class="treeview">
@@ -185,6 +182,18 @@ desired effect
             <li><a href="{{ route('usuarios.crear') }}"><i class="fa fa-pencil"></i>Crear Usuario Cliente</a></li>
           </ul>
         </li>
+        @endif
+        <li class="treeview">
+          <a href="#"><i class="fa fa-file"></i> <span>Factura</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="{{-- route('variables.index') --}}"><i class="fa fa-eye"></i>Crear Facturas</a></li>
+          </ul>
+        </li>
+        
       </ul>
       <!-- /.sidebar-menu -->
     </section>

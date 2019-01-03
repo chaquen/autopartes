@@ -169,8 +169,11 @@
 	      <!--Asignar Usuario para gestionar la orden-->
 	      	<hr>
       	</div>
-		<div class="form-group col-md-offset-4">
-    		<button type="submit" class="btn btn-primary col-md-5">Actualizar la Orden</button>
+		<div class="form-group col-md-offset-3">
+    		<button type="submit" class="btn btn-primary col-md-3">Actualizar la Orden</button>
+    	</div>
+    	<div class="form-group col-md-4">
+    		<button type="submit" class="btn btn-success col-md-5">Enviar al Cliente</button>
     	</div>
     	</form>
     </div>
