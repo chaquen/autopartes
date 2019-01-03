@@ -99,9 +99,10 @@ desired effect
                   <form method="POST" action="{{route('logout')}}">
                    {{csrf_field()}}  
                     <!--<a href="#" class="btn btn-default btn-flat">Cerrar Sesión</a>-->
-                     <button>Cerrar sesión</button> 
+                     
+                     <button>Cerrar sesión</button>
                   </form>
-                  
+
 
                 </div>
               </li>
