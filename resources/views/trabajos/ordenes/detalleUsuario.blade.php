@@ -3,11 +3,11 @@
 @section('contenido')
 	<div class="box box-warning">
 	    <div class="box-header col-md-12">
-	      <h3 class="box-title">Detalles de la Orden - <b>{{$orden_id}}</b></h3>
+	      <h3 class="box-title">Detalles de la Orden - <b></b></h3>
 	    </div>
 	    <!-- /.box-header -->
 
-	    <form class="form" method="POST" action="{{ route('ordenes.update') }}">
+	    <form class="form" method="POST" action="{{-- route('ordenes.update') --}}">
 		{{ csrf_field() }}
 	    <div class="box-body table-responsive col-md-12 bg-warning">
 	    	<input type="hidden" name="ordenId" value="{{$orden_id}}">
@@ -26,11 +26,8 @@
 		        		<th>Total Peso Libra</th>
 		        		<th>Costo Flete Unidad</th>
 		        		<th>Costo Total Flete</th>
-		        		<th>Costo Unitario</th>
-		        		<th>Margen USA</th>
 		        		<th>Precio Unitario USD</th>
 		        		<th>Precio Total USD</th>
-		        		<th>Dividir el Item</th>
 		        		
 		        		<!--<th>Venta Unitario</th>
 		        		<th>Total USD</th>
@@ -80,31 +77,23 @@
 			        				<input type="hidden" name="comentarios[]" value="{{ $detalle->comentarios }}">
 			        			</td>
 			        			<td>
-			        				<input name="pesoLb[]" id="pesoLb{{$detalle->id}}" value="{{$detalle->pesoLb}}" onchange="calculalPesoLibras({{$detalle->id}},this,{{$detalle->cantidad}})">
-
-			        				<input type="hidden" id="valorPesoLibra{{$detalle->id}}" value="{{$variables[1]->valor}}">
+			        				<label >{{$detalle->pesoLb}}</label>
 			        			</td>
 			        			@php
 			        				$costoFleteUnidad = $variables[1]->valor * $detalle->pesoLb;
 			        				$totalPeso = $detalle->cantidad * $detalle->pesoLb;
 			        				$costoTotalFlete = $costoFleteUnidad * $totalPeso;
-			        				
 			        			@endphp	
 			        			<td class="bg-success">
 			        				<label id="totalPesoLibra{{$detalle->id}}">{{$totalPeso}}</label>
 			        			</td>			        			        			
 			        			<td class="bg-danger">
-			        				<label id="costoFlete{{$detalle->id}}">{{$costoFleteUnidad}}</label>
+			        				<label id="costoFlete{{$detalle->id}}">$US {{$costoFleteUnidad}}</label>
 			        			</td>
 			        			<td class="bg-danger">
-			        				<label id="costoTotalFlete{{$detalle->id}}">{{$costoTotalFlete}}</label>
+			        				<label id="costoTotalFlete{{$detalle->id}}">$US {{$costoTotalFlete}}</label>
 			        			</td>
-		        				<td>
-		        					<input name="costoUnitario[]" value="{{$detalle->costoUnitario}}">
-		        				</td>  			
-			        			<td>
-			        				<input name="margenUsa[]" value="{{$detalle->margenUsa}}"></td>
-			        			</td>
+		        				
 			        				@php
 			        					$a = $detalle->costoUnitario;
 			        					$b = $detalle->margenUsa;
@@ -118,46 +107,9 @@
 			        					$precioVenta = $a+$prom+$e;
 			        				@endphp
 		        				<td>
-		        					<label>{{ $precioVenta }}</label>
+		        					<label>$US {{ $precioVenta }}</label>
 		        				</td>
 		        				<td></td>
-			        			<td>
-			        				@if($detalle->cantidad > 1)
-			        					<button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#exampleModalCenter{{ $detalle->id }}">Dividir</button>	
-					    			@endif	
-					    			<div class="modal fade" id="exampleModalCenter{{ $detalle->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-									  	<div class="modal-dialog modal-dialog-centered" role="document">
-										    <div class="modal-content">
-										      <div class="modal-header">
-										        <h5 class="modal-title" id="exampleModalCenterTitle">División del Item {{ $detalle->id }}</h5>
-										        <h5>Cantidad del Item {{ $detalle->cantidad }}</h5>
-										        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-										          <span aria-hidden="true">&times;</span>
-										        </button>
-										      </div>
-										      <div class="modal-body">
-										        <div class="form-group">
-									    			<label>¿En cuantos Items, desea dividirlo?</label>
-									    			<input type="number" name="itemDiv" id="itemDiv{{ $detalle->id }}" class="form-control" placeholder="Ingrese la cantidad"/>
-
-									    		</div>
-									    		
-									    		<div class="form-group">
-									    			<input class="btn btn-warning" type="button" value="Dividir Item" onclick="dividirItem('itemDiv{{ $detalle->id }}', '{{ $detalle->id }}')">
-									    		</div>
-
-									    		<table id="body_table{{ $detalle->id }}">
-									    			
-									    		</table>
-										      </div>
-										      <div class="modal-footer">
-										        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-										        <button type="button" class="btn btn-primary" onclick="crearDivisiones()">Aceptar</button>
-										      </div>
-										    </div>
-							  			</div>
-									</div>		        				
-			        			</td>
 			        			
 			        			<td><input type="hidden" name="detalle_id[]" value="{{$detalle->id}}"></td>
 			        		</tr>
@@ -170,15 +122,8 @@
 	      	<hr>
       	</div>
 		<div class="form-group col-md-offset-3">
-    		<button type="submit" class="btn btn-primary col-md-3">Actualizar la Orden</button>
+    		<button type="submit" class="btn btn-primary col-md-3">Aceptar</button>
     	</div>
-    	</form>
-    	<!--Actualizar la orden a cotizado y enviar los datos al cliente-->
-    	<form class="form" method="POST" action="{{ route('ordenes.cotizarOrden',$orden_id) }}">
-    		{{ csrf_field() }}
-    		<div class="form-group col-md-4">
-	    		<button type="submit" class="btn btn-success col-md-5">Enviar al Cliente</button>
-	    	</div>
     	</form>
     </div>
     <script type="text/javascript">
