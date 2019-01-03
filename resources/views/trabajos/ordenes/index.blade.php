@@ -33,7 +33,11 @@
 	        		<tr>
 	        			<td>{{ $orden->id }}</td>
 	        			<td>{{ $orden->name }}</td>
-	        			<td>{{ $orden->nombreEstado }}</td>
+	        			@if($orden->nombreEstado == 'Por Cotizar Asignado' || $orden->nombreEstado == 'Por Cotizar Sin Asignar')
+	        				<td>Por Cotizar</td>
+	        			@elseif($orden->nombreEstado == 'Cotizado Sin Asignar' || $orden->nombreEstado == 'Cotizado Asignado')
+        				 	<td>Cotizado</td>
+	        			@endif
 	        			<td>{{ $orden->nombreConvencion }}</td>
 	        			<td>{{ $orden->Trm }}</td>
 	        			<td>{{ $orden->created_at }}</td>

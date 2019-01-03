@@ -31,7 +31,11 @@
 		        	@foreach($ordenAsignadas as $orden)	
 		        		<tr>
 		        			<td>{{ $orden->id }}</td>
-		        			<td>{{ $orden->nombreEstado }}</td>
+		        			@if($orden->nombreEstado == 'Por Cotizar Asignado' || $orden->nombreEstado == 'Por Cotizar Sin Asignar')
+	        				<td>Por Cotizar</td>
+	        			@elseif($orden->nombreEstado == 'Cotizado Sin Asignar' || $orden->nombreEstado == 'Cotizado Asignado')
+        				 	<td>Cotizado</td>
+	        			@endif
 		        			<td>{{ $orden->name }}</td>
 		        			<td>{{ $orden->created_at }}</td>
 		        			<td>
