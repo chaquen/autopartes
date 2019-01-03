@@ -23,7 +23,7 @@
 		    		<div class="form-group col-md-3">
 						<label>Sede</label>
 						<select class="form-control" name="sede" id="sede" required>
-							<option value="">Selecciona una Sede</option>
+							<option value="0">Selecciona una Sede</option>
 							@foreach($sedes as $sede)
 								<option value="{{ $sede->id }}">- {{ $sede->nombre }}</option>
 							@endforeach
@@ -96,6 +96,28 @@
 
 	    function agregar_a_list(){
 	        
+
+	        
+	        if(document.getElementById('sede').value=="0"){
+	        	alert("Debes seleccionar una sede");
+	        	return false;
+	        }
+	        if(document.getElementById('marca').value==""){
+	        	alert("Debes ingresar una marca");
+	        	return false;
+	        }
+	        if(document.getElementById('referencia').value==""){
+	        	alert("Debes ingresar una referencia");
+	        	return false;
+	        }
+	        if(document.getElementById('cantidad').value==""){
+	        	alert("Debes ingresar la cantidad");
+	        	return false;
+	        }
+	        if(document.getElementById('descripcion').value==""){
+	        	alert("Debes ingresar una descripción de tu producto");
+	        	return false;
+	        }
 	        var ob={
 	        	sede:document.getElementById('sede').value,
 	            marca:document.getElementById('marca').value,
@@ -107,12 +129,7 @@
 
 	        arreglo.push(ob);
 	        draw_table();
-	        document.getElementById('sede').value="";
-	        document.getElementById('marca').value="";   
-	        document.getElementById('referencia').value="";
-	        document.getElementById('cantidad').value="";
-	        document.getElementById('descripcion').value="";
-	        document.getElementById('comentarios').value="";
+	        
 
 	    }
 
@@ -134,7 +151,12 @@
 	            hd.setAttribute('type','hidden');
 	            hd.setAttribute('name','sede[]');
 	            hd.value=arreglo[f].sede;    
-	            label.innerHTML=document.getElementById("sede").options[document.getElementById('sede').selectedIndex].text;
+	            for(var i in document.getElementById("sede").options){
+	            	if(document.getElementById("sede").options[i].value==arreglo[f].sede){
+	            		label.innerHTML=document.getElementById("sede").options[i].text;
+	            		break;
+	            	}
+	            }
 	            td.appendChild(hd);
 	            td.appendChild(label);
 	            //agrego el campo a la fila de la tabla
@@ -209,6 +231,14 @@
 	            //agrego la fila a el cuerpo de la tabla
 	            t.appendChild(tr);
 	        }
+
+
+	        document.getElementById('sede').value="0";
+	        document.getElementById('marca').value="";   
+	        document.getElementById('referencia').value="";
+	        document.getElementById('cantidad').value=1;
+	        document.getElementById('descripcion').value="";
+	        document.getElementById('comentarios').value="";
 	    }
 	</script>				
 @stop

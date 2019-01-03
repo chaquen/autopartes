@@ -29,7 +29,7 @@
                             @endif
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="telefono" class="col-form-label text-md-right">Telefono</label>
+                            <label for="telefono" class="col-form-label text-md-right">Teléfono</label>
                             <input id="telefono" type="text" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="telefono" value="{{ old('telefono') }}" required>
                             @if ($errors->has('telefono'))
                                 <span class="invalid-feedback" role="alert">
@@ -45,7 +45,16 @@
                                     <strong>{{ $errors->first('email') }}</strong>
                                 </span>
                             @endif
-                        </div>                         
+                        </div>   
+                        {{--<div class="form-group col-md-6">
+                            <label for="direccion" class="col-form-label text-md-right">Rol</label>
+                               <select name="rol"> 
+                                {{dd($roles)}}
+                                @foreach($roles as $r)
+                                    <option value="{{$r->id}}">{{$rol->nombre}}</option>
+                                @endforeach
+                               </select>
+                        </div>--}}                         
                         {{--
                         <div class="panel panel-info col-md-12">
                             <div class="panel-heading">

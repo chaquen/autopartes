@@ -15,6 +15,7 @@
 	        		<th>Telefono</th>
 	        		<th>Contacto</th>
 	        		<th>Rol</th>
+	        		<th>Acciones</th>
 	        	</tr>
 	        </thead>
 	        
@@ -26,7 +27,56 @@
 	        			<td>{{ $usuario->telefono }}</td>
 	        			<td>{{ $usuario->direccion }}</td>
 	        			<td>{{ $usuario->nombre }}</td>
-	        			
+	        			<td>
+		        			<button type="button" class="btn btn-xs btn-success" data-toggle="modal" data-target="#exampleModal{{$usuario->id}}">Editar</button>
+		        			{{--<a href="" class="btn btn-xs btn-danger"><i class="fa fa-times"></i></a>--}}
+		        			<div class="modal fade" id="exampleModal{{$usuario->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+								
+								<form method="POST" action="{{route('usuarios.actualizar',$usuario->id)}}">
+						    		{{ csrf_field() }}
+									<div class="modal-dialog" role="document">
+
+									    <div class="modal-content">
+
+									      <div class="modal-header">
+									        <h5 class="modal-title" id="exampleModalLabel">Editar información de {{$usuario->name}}</h5>
+									        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									          <span aria-hidden="true">&times;</span>
+									        </button>
+									      </div>
+
+									      <div class="modal-body">
+
+								        	<div class="form-group">
+								    			<label>Nombre</label>
+								    			<input name="nombre" class="form-control" value="{{ $usuario->name }}" required></input>
+								    			<input type="hidden" name="id" class="form-control" value="{{ $usuario->id }}"></input>
+								    		</div>
+								    		<div class="form-group">
+								    			<label>Dirección</label>
+								    			<input name="direccion" class="form-control" value="{{ $usuario->direccion }}" required></input>
+								    		</div>
+								    		<div class="form-group">
+								    			<label>Teléfono</label>
+								    			<input name="telefono" class="form-control" value="{{ $usuario->telefono }}" required></input>
+								    		</div>
+								    		<div class="form-group">
+								    			<label>Email</label>
+								    			<input name="email" class="form-control" value="{{ $usuario->email }}" required></input>
+								    		</div>
+								    		
+
+									      </div>
+									      <div class="modal-footer">
+									        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+									        <button type="submit" class="btn btn-success">Editar Usuario</button>
+									      </div>
+									    </div>
+									</div>	
+								</form>
+					  		</div>
+		        		</td>
 	        			{{--
 	        			<td>
 		        			<button type="button" class="btn btn-xs btn-success" data-toggle="modal" data-target="#exampleModal{{$usuario->id}}">Editar</button>
