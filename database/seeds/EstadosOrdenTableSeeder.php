@@ -19,7 +19,23 @@ class EstadosOrdenTableSeeder extends Seeder
         $estadoOrden->save();
 
         $estadoOrden = new EstadoOrden;
+        $estadoOrden->nombreEstado = "Por Cotizar Sin Asignar";
+        $estadoOrden->save();
+
+        $estadoOrden = new EstadoOrden;
+        $estadoOrden->nombreEstado = "Por Cotizar Asignado";
+        $estadoOrden->save();
+
+        $estadoOrden = new EstadoOrden;
         $estadoOrden->nombreEstado = "Cotizado";
+        $estadoOrden->save();
+
+        $estadoOrden = new EstadoOrden;
+        $estadoOrden->nombreEstado = "Cotizado Sin Asignar";
+        $estadoOrden->save();
+
+        $estadoOrden = new EstadoOrden;
+        $estadoOrden->nombreEstado = "Cotizado Asignado";
         $estadoOrden->save();
 
         $estadoOrden = new EstadoOrden;
@@ -27,7 +43,23 @@ class EstadosOrdenTableSeeder extends Seeder
         $estadoOrden->save();
 
         $estadoOrden = new EstadoOrden;
+        $estadoOrden->nombreEstado = "Orden Sin Asignar";
+        $estadoOrden->save();
+
+        $estadoOrden = new EstadoOrden;
+        $estadoOrden->nombreEstado = "Orden Asignado";
+        $estadoOrden->save();
+
+        $estadoOrden = new EstadoOrden;
         $estadoOrden->nombreEstado = "Ordenado";
+        $estadoOrden->save();
+
+        $estadoOrden = new EstadoOrden;
+        $estadoOrden->nombreEstado = "Ordenado Sin Asignar";
+        $estadoOrden->save();
+
+        $estadoOrden = new EstadoOrden;
+        $estadoOrden->nombreEstado = "Ordenado Asignado";
         $estadoOrden->save();
 
         $estadoOrden = new EstadoOrden;

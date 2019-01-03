@@ -36,7 +36,7 @@ class OrdenesController extends Controller
         ->join('convencions','ordens.convencion_id','=','convencions.id')
         ->where('user_id','=',$user)
         ->get();
-        
+        dd($ordenes);
         return view('trabajos.ordenes.misOrdenes', compact('ordenes'));
     }
 
@@ -58,12 +58,23 @@ class OrdenesController extends Controller
     {
     	//dd($request);
     	//Almacenamos los datos de la orden
+        $trm = VariableEditable::select('variable_editables.valor')
+        ->where('variable_editables.id','=',1)
+        ->get();
+
+        //dd($trm);
     	$orden = new Orden;
-    	$orden->estado_id = 1;
+    	$orden->estado_id = 2;
     	$orden->user_id = auth()->user()->id;
     	$orden->convencion_id = $request->get('convencion');
-    	$orden->trm = 2000;
-    	$orden->save();    
+    	$orden->trm = $trm[0]->valor;
+    	$orden->save();
+
+        //Se crea el historial 
+        $historialOrden = new historialOrden;
+        $historialOrden->orden_id = $orden->id;
+        $historialOrden->estadoActual_id = 2;
+        $historialOrden->save();    
 
         //Recorremos cada detalle que trae los productos relacionados a la Orden y los almacenamos
     	foreach ($request['sede'] as $key => $value) 
@@ -80,12 +91,7 @@ class OrdenesController extends Controller
 	    	$item->save();
     	}
 
-        $historialOrden = new historialOrden;
-        $historialOrden->orden_id = $orden->id;
-        $historialOrden->estadoAnterior_id = 1;
-        $historialOrden->estadoActual_id = 1;
-        $historialOrden->userGestiona_id = auth()->user()->id;
-        $historialOrden->save();
+        
 
     	//retornamos a la vista
     	return back()->with('flash','La orden ha sido creada');
@@ -99,9 +105,9 @@ class OrdenesController extends Controller
         $sinUsuario = Orden::select('ordens.id','ordens.created_at','estado_ordens.nombreEstado','users.name')
         ->join('estado_ordens','ordens.estado_id','=','estado_ordens.id')
         ->join('users','ordens.user_id','=','users.id')
-        ->where('ordens.estado_id','=','1')
+        ->where('ordens.estado_id','=',2)
         ->get();
-        
+        //dd($sinUsuario);
         return view('trabajos.ordenes.cotizadas', compact('sinUsuario'));
     }
 
@@ -127,13 +133,12 @@ class OrdenesController extends Controller
 
         $historialOrden = new historialOrden;
         $historialOrden->orden_id = $request->get('ordenId');
-        $historialOrden->estadoAnterior_id = 1;
-        $historialOrden->estadoActual_id = 1;
-        $historialOrden->userGestiona_id = $UserGestiona;
+        $historialOrden->estadoActual_id = 3;
         $historialOrden->userAsignado_id = $request->get('usuarioAsignado');
         $historialOrden->save();
 
         $Orden = Orden::where('id', $request->get('ordenId'))->first();
+        $Orden->estado_id = 3;
         $Orden->update();
 
         return redirect('trabajos/ordenes/cotizadas')->with('flash','El Usuario fue asignado');
@@ -147,7 +152,7 @@ class OrdenesController extends Controller
             ->join('estado_ordens','ordens.estado_id','=','estado_ordens.id')
             ->join('users','ordens.user_id','=','users.id')
             ->join('historial_Ordens','historial_Ordens.orden_id','ordens.id')
-            ->where('historial_Ordens.userAsignado_id','!=','null')
+            ->where('ordens.estado_id','=',3)
             ->get();
         //dd($ordenAsignadas);                    
         return view('trabajos.ordenes.asignadas', compact('ordenAsignadas'));
