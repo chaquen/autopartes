@@ -37,7 +37,7 @@ Route::group(['prefix'=>'trabajos','namespace'=>'Trabajos','middleware'=>'auth']
     Route::get('ordenes/detalleUsuario/{orden_id}','OrdenesController@detalleUsuario')->name('ordenes.detalleUsuario');
     Route::get('ordenes/crear','OrdenesController@crear')->name('ordenes.crear');
     Route::post('ordenes/almacenar','OrdenesController@almacenar')->name('ordenes.almacenar');
-    Route::get('ordenes/cotizadas', 'OrdenesController@cotizadas')->name('ordenes.cotizadas');
+    Route::get('ordenes/sinAsignar', 'OrdenesController@sinAsignar')->name('ordenes.sinAsignar');
     Route::get('detalleOrden/{orden_id}','OrdenesController@detalleCotizadas')->name('ordenes.detalle');
     Route::post('asignarUsuarioOrden/', 'OrdenesController@asignarUsuarioOrden')->name('ordenes.asignarUsuarioOrden');
     Route::get('ordenes/asignadas', 'OrdenesController@asignadas')->name('ordenes.asignadas');

@@ -152,7 +152,7 @@ desired effect
             @endif  
             @if(auth()->user()->rol_id == 1)
             <li><a href="{{ route('ordenes.index') }}"><i class="fa fa-pencil"></i>Ver Ordenes</a></li>
-            <li><a href="{{ route('ordenes.cotizadas') }}"><i class="fa fa-eye"></i>Sin Asignar</a></li>
+            <li><a href="{{ route('ordenes.sinAsignar') }}"><i class="fa fa-eye"></i>Sin Asignar</a></li>
             <li><a href="{{ route('ordenes.asignadas') }}"><i class="fa fa-eye"></i>Asignadas</a></li>
             @endif
             

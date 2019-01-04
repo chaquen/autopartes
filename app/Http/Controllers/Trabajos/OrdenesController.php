@@ -112,17 +112,18 @@ class OrdenesController extends Controller
     }
 
     //consulta de Ordenes sin Asignar .........................................................//
-    public function cotizadas()
+    public function sinAsignar()
     {   
         //$sinUsuario = Orden::where('ordens.estado_id','=',1)->get();
 
         $sinUsuario = Orden::select('ordens.id','ordens.created_at','estado_ordens.nombreEstado','users.name')
         ->join('estado_ordens','ordens.estado_id','=','estado_ordens.id')
         ->join('users','ordens.user_id','=','users.id')
-        ->where('ordens.estado_id','=',2)
+        ->where('ordens.estado_id','=',5)
+        ->orwhere('ordens.estado_id','=',2)
         ->get();
         //dd($sinUsuario);
-        return view('trabajos.ordenes.cotizadas', compact('sinUsuario'));
+        return view('trabajos.ordenes.sinAsignar', compact('sinUsuario'));
     }
 
     //Detalle de las ordenes sin Asignar .......................................................
