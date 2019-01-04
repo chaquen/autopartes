@@ -16,6 +16,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\UsuarioCreado' => [
             'App\Listeners\CredencialesLogin',
         ],
+        'App\Events\NotificationEvent' =>[
+            'App\Listeners\SendNotification',
+        ],
     ];
 
     /**
