@@ -23,7 +23,7 @@ class OrdenesController extends Controller
         ->join('users','ordens.user_id','=','users.id')
         ->join('convencions','ordens.convencion_id','=','convencions.id')
         ->get();
-        
+        //dd($ordenes);
         return view('trabajos.ordenes.index', compact('ordenes'));
     }
 
@@ -38,6 +38,20 @@ class OrdenesController extends Controller
         ->get();
         //dd($ordenes);
         return view('trabajos.ordenes.misOrdenes', compact('ordenes'));
+    }
+
+    public function detalleUsuario($orden_id)
+    {
+        $detalleOrden = itemOrden::select('ordens.id','sedes.nombre','item_ordens.estadoItem_id','item_ordens.sede_id','item_ordens.id','marca','referencia','descripcion','cantidad','comentarios','pesoLb','costoUnitario','margenUsa')
+        ->join('ordens','item_ordens.orden_id','=','ordens.id')
+        ->join('sedes','item_ordens.sede_id','=','sedes.id')
+        ->where('ordens.id','=',$orden_id)
+        ->where('item_ordens.estadoItem_id','=',1)
+        ->get();
+        //dd($detalleOrden);
+        $variables = VariableEditable::all();
+        //dd($detalleOrden);
+        return view('trabajos.ordenes.detalleUsuario', compact('detalleOrden','variables'))->with('orden_id',$orden_id);
     }
 
     public function crear()
@@ -148,10 +162,9 @@ class OrdenesController extends Controller
     public function asignadas()
     {
 
-        $ordenAsignadas = Orden::select('ordens.id','ordens.created_at','estado_ordens.nombreEstado','users.name','historial_Ordens.userAsignado_id')
+        $ordenAsignadas = Orden::select('ordens.id','ordens.created_at','estado_ordens.nombreEstado','users.name')
             ->join('estado_ordens','ordens.estado_id','=','estado_ordens.id')
             ->join('users','ordens.user_id','=','users.id')
-            ->join('historial_Ordens','historial_Ordens.orden_id','ordens.id')
             ->where('ordens.estado_id','=',3)
             ->get();
         //dd($ordenAsignadas);                    
@@ -176,10 +189,7 @@ class OrdenesController extends Controller
 
     //Actualización de los items de las ordenes ............................................................................
     public function update(Request $request)
-    {          
-
-        
-        
+    {        
         //Recorremos si hay algun item dividido ********************************* 
         foreach ($request['detalle_id'] as $key => $value) 
         {
@@ -264,6 +274,17 @@ class OrdenesController extends Controller
             }          
         }
         return back()->with('flash','La orden ha sido actualizada');
-    }    
+    }   
+
+    public function cotizarOrden($orden_id)
+    {   
+        //dd('Imprimir');
+        $orden = Orden::where('id', $orden_id)->first();
+        $orden->estado_id = 5;
+        $orden->update();
+
+        return view('trabajos.ordenes.asignadas')->with('success','Se cambio la orden a estado Cotizado y se enviaron los datos al cliente');
+
+    }  
         
 }

@@ -34,6 +34,7 @@ Route::group(['prefix'=>'trabajos','namespace'=>'Trabajos','middleware'=>'auth']
     //Rutas de las ordenes
     Route::get('ordenes/index','OrdenesController@index')->name('ordenes.index');
     Route::get('ordenes/misOrdenes','OrdenesController@porUsuario')->name('ordenes.misOrdenes');
+    Route::get('ordenes/detalleUsuario/{orden_id}','OrdenesController@detalleUsuario')->name('ordenes.detalleUsuario');
     Route::get('ordenes/crear','OrdenesController@crear')->name('ordenes.crear');
     Route::post('ordenes/almacenar','OrdenesController@almacenar')->name('ordenes.almacenar');
     Route::get('ordenes/cotizadas', 'OrdenesController@cotizadas')->name('ordenes.cotizadas');
@@ -42,6 +43,8 @@ Route::group(['prefix'=>'trabajos','namespace'=>'Trabajos','middleware'=>'auth']
     Route::get('ordenes/asignadas', 'OrdenesController@asignadas')->name('ordenes.asignadas');
     Route::get('detalleAsignada/{orden_id}', 'OrdenesController@detalleAsignada')->name('detalle.asignadas');
     Route::post('ordenes/actualizar','OrdenesController@update')->name('ordenes.update');
+
+    Route::post('ordenes/cotizarOrden/{orden_id}','OrdenesController@cotizarOrden')->name('ordenes.cotizarOrden');
 
     //Rutas de las sedes
     Route::get('sedes','SedesController@index')->name('sedes.index');

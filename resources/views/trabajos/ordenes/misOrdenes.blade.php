@@ -29,17 +29,23 @@
 	        	</tr>
 	        </thead>
 	        
-	        <tbody>
+	        <tbody> 
 	        	@foreach($ordenes as $orden)	
 	        		<tr>
 	        			<td>{{ $orden->id }}</td>
 	        			<td>{{ $orden->name }}</td>
-	        			<td>{{ $orden->nombreEstado }}</td>
+	        			@if($orden->nombreEstado == 'Por Cotizar Asignado' || $orden->nombreEstado == 'Por Cotizar Sin Asignar')
+	        				<td>Por Cotizar</td>
+	        			@elseif($orden->nombreEstado == 'Cotizado Sin Asignar' || $orden->nombreEstado == 'Cotizado Asignado')
+        				 	<td>Cotizado</td>
+	        			@endif
+
+	        			
 	        			<td>{{ $orden->nombreConvencion }}</td>
 	        			<td>{{ $orden->Trm }}</td>
 	        			<td>{{ $orden->created_at }}</td>
 	        			<td>
-	        				<a href="{{ route('ordenes.detalle', $orden->id) }}" class="btn btn-xs btn-warning"><i class="fa fa-eye"></i> Ver Detalle</a>
+	        				<a href="{{ route('ordenes.detalleUsuario', $orden->id) }}" class="btn btn-xs btn-warning"><i class="fa fa-eye"></i> Ver Detalle</a>
 		        			
 		        			<a href="" class="btn btn-xs btn-danger"><i class="fa fa-times"></i></a>
 		        		</td>

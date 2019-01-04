@@ -51,7 +51,7 @@ class SedesController extends Controller
     	$sede->valor = $request->get('contacto');
     	$sede->update();
 
-		return view('trabajos.sedes.index');
+		return view('trabajos.sedes.index')->with('success','Se actualizo exitosamente');
         //return view('admin.variables.index')->with('success','Se actualizo exitosamente');
     }
 }
