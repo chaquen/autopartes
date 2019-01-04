@@ -13,13 +13,13 @@
 
 Route::auth();
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 
 
 Route::group(['prefix'=>'admin','namespace'=>'Admin','middleware'=>'auth'], function(){
-    
+
     Route::get('/', 'UsuariosController@panel');
     Route::get('usuarios', 'UsuariosController@index')->name('usuarios.index');
     Route::get('usuarios/crear','UsuariosController@crear')->name('usuarios.crear');
@@ -57,5 +57,12 @@ Route::group(['prefix'=>'trabajos','namespace'=>'Trabajos','middleware'=>'auth']
     Route::post('variables/{variable_id}', 'VariableController@update')->name('trabajos.variables.update');
 
 });
-
-    
+Route::get('/clearcache', function(){
+      Artisan::call('cache:clear');
+      Artisan::call('config:clear');
+      Artisan::call('route:clear');
+      Artisan::call('view:clear');
+      // Artisan::call('event:generate ');
+      // Artisan::call('key:generate');
+      return '<h1>se ha borrado el cache</h1>';
+});

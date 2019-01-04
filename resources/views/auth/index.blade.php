@@ -10,6 +10,7 @@
 	      <table id="sedes-table" class="table table-bordered table-striped">
 	        <thead>
 	        	<tr>
+
 	        		<th>Nombre</th>
 	        		<th>Email</th>
 	        		<th>Telefono</th>
@@ -18,10 +19,11 @@
 	        		<th>Acciones</th>
 	        	</tr>
 	        </thead>
-	        
+
 	        <tbody>
-	        	@foreach($usuarios as $usuario)	
+	        	@foreach($usuarios as $usuario)
 	        		<tr>
+
 	        			<td>{{ $usuario->name }}</td>
 	        			<td>{{ $usuario->email }}</td>
 	        			<td>{{ $usuario->telefono }}</td>
@@ -32,10 +34,9 @@
 		        			{{--<a href="" class="btn btn-xs btn-danger"><i class="fa fa-times"></i></a>--}}
 		        			<div class="modal fade" id="exampleModal{{$usuario->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
-								
-								<form method="POST" action="{{route('usuarios.actualizar',$usuario->id)}}">
-						    		{{ csrf_field() }}
-									<div class="modal-dialog" role="document">
+										<form method="POST" action="{{route('usuarios.actualizar',$usuario->id)}}">
+						    			{{ csrf_field() }}
+											<div class="modal-dialog" role="document">
 
 									    <div class="modal-content">
 
@@ -65,7 +66,23 @@
 								    			<label>Email</label>
 								    			<input name="email" class="form-control" value="{{ $usuario->email }}" required></input>
 								    		</div>
-								    		
+
+												<div class="form-group">
+													<label for="rol" class="col-form-label text-md-right">Rol</label>
+														 <select name="rol" required>
+															 <option value="0">Selecciona un rol</option>
+
+															@foreach($roles as $r)
+
+																@if($usuario->rol_id == $r->id)
+																	<option value="{{$r->id}}" selected>{{$r->nombre}}</option>
+																	@break
+																@else
+																	<option value="{{$r->id}}">{{$r->nombre}}</option>
+																@endif
+															@endforeach
+														 </select>
+												</div>
 
 									      </div>
 									      <div class="modal-footer">
@@ -73,9 +90,9 @@
 									        <button type="submit" class="btn btn-success">Editar Usuario</button>
 									      </div>
 									    </div>
-									</div>	
-								</form>
-					  		</div>
+									</div>
+										</form>
+					  			</div>
 		        		</td>
 	        			{{--
 	        			<td>
@@ -121,18 +138,18 @@
 									        <button type="submit" class="btn btn-primary">Editar Sede</button>
 									      </div>
 									    </div>
-									</div>								
+									</div>
 								</form>
 					  		</div>
 		        		</td>--}}
 
-		        		
+
 	        		</tr>
 	        	@endforeach
-	        	
+
 	        </tbody>
 	      </table>
 	    </div>
 	    <!-- /.box-body -->
-	  </div>	
+	  </div>
 @stop

@@ -18,8 +18,8 @@
 			      <h3 class="box-title">Ingrese los datos para crear una nueva orden</h3>
 			    </div>
 			    <!-- /.box-header -->
-			    
-		    	<div class="box-body">					
+
+		    	<div class="box-body">
 		    		<div class="form-group col-md-3">
 						<label>Sede</label>
 						<select class="form-control" name="sede" id="sede" required>
@@ -44,13 +44,13 @@
 		    		<div class="form-group col-md-6">
 		    			<label>Descripción</label>
 		    			<input name="descripcion" id="descripcion" class="form-control" placeholder="Ingrese la descripcion" required></input>
-		    		</div>			    		
+		    		</div>
 		    		<div class="form-group col-md-6">
 		    			<label>Comentarios</label>
 		    			<input name="comentarios" id="comentarios" class="form-control" placeholder="Ingrese los comentarios"></input>
 		    		</div>
 		    		<div class="form-group">
-		    			<input class="btn btn-warning" value="agregar" onclick="agregar_a_list()">
+		    			<input type="button" class="btn btn-warning" value="agregar" onclick="agregar_a_list()">
 		    		</div>
 		    	</div>
 
@@ -69,12 +69,12 @@
 		    			</thead>
 
 		    			<tbody id="body_table">
-		    				
+
 		    			</tbody>
 		    		</table>
 
 		    		<div class="form-group col-md-3 col-md-offset-3">
-						
+
 						<select class="form-control" name="convencion" id="convencion" required>
 							<option value="">Selecciona el tipo de factura</option>
 							@foreach($convenciones as $conven)
@@ -82,22 +82,22 @@
 							@endforeach
 						</select>
 					</div>
-		    		
+
 		    		<div class="form-group col-md-4">
 		    			<button type="submit" class="btn btn-primary">Crear Orden</button>
-		    		</div>	        
+		    		</div>
 		    	</form>
-		    </div>	    	    			
-		</div>			
+		    </div>
+		</div>
 	</div>
 	<script type="text/javascript">
 
 	    var arreglo=[];
 
 	    function agregar_a_list(){
-	        
 
-	        
+
+
 	        if(document.getElementById('sede').value=="0"){
 	        	alert("Debes seleccionar una sede");
 	        	return false;
@@ -129,7 +129,7 @@
 
 	        arreglo.push(ob);
 	        draw_table();
-	        
+
 
 	    }
 
@@ -141,16 +141,16 @@
 	        for(var f in arreglo){
 
 	            //creo un tr
-	            var tr = document.createElement('tr');  
+	            var tr = document.createElement('tr');
 	            //creo un td
-	            
-	            var td = document.createElement('td');  
+
+	            var td = document.createElement('td');
 	            //creo un label
 	            var label = document.createElement('label');
 	            var hd = document.createElement('input');
 	            hd.setAttribute('type','hidden');
 	            hd.setAttribute('name','sede[]');
-	            hd.value=arreglo[f].sede;    
+	            hd.value=arreglo[f].sede;
 	            for(var i in document.getElementById("sede").options){
 	            	if(document.getElementById("sede").options[i].value==arreglo[f].sede){
 	            		label.innerHTML=document.getElementById("sede").options[i].text;
@@ -161,84 +161,84 @@
 	            td.appendChild(label);
 	            //agrego el campo a la fila de la tabla
 	            tr.appendChild(td);
-	            
-	            var td = document.createElement('td');  
+
+	            var td = document.createElement('td');
 	            //creo un label
 	            var label = document.createElement('label');
 	            var hd = document.createElement('input');
 	            hd.setAttribute('type','hidden');
 	            hd.setAttribute('name','marca[]');
-	            hd.value=arreglo[f].marca;    
+	            hd.value=arreglo[f].marca;
 	            label.innerHTML=arreglo[f].marca;
 	            td.appendChild(hd);
 	            td.appendChild(label);
 	            //agrego el campo a la fila de la tabla
 	            tr.appendChild(td);
-	            
-	            var td = document.createElement('td');  
+
+	            var td = document.createElement('td');
 	            //creo un label
 	            var label = document.createElement('label');
 	            var hd = document.createElement('input');
 	            hd.setAttribute('type','hidden');
 	            hd.setAttribute('name','referencia[]');
-	            hd.value=arreglo[f].referencia;    
+	            hd.value=arreglo[f].referencia;
 	            label.innerHTML=arreglo[f].referencia;
 	            td.appendChild(hd);
 	            td.appendChild(label);
 	            //agrego el campo a la fila de la tabla
 	            tr.appendChild(td);
-	            
-	            var td = document.createElement('td');  
+
+	            var td = document.createElement('td');
 	            //creo un label
 	            var label = document.createElement('label');
 	            var hd = document.createElement('input');
 	            hd.setAttribute('type','hidden');
 	            hd.setAttribute('name','cantidad[]');
-	            hd.value=arreglo[f].cantidad;    
+	            hd.value=arreglo[f].cantidad;
 	            label.innerHTML=arreglo[f].cantidad;
 	            td.appendChild(hd);
 	            td.appendChild(label);
 	            //agrego el campo a la fila de la tabla
 	            tr.appendChild(td);
-	            
-	            var td = document.createElement('td');  
+
+	            var td = document.createElement('td');
 	            //creo un label
 	            var label = document.createElement('label');
 	            var hd = document.createElement('input');
 	            hd.setAttribute('type','hidden');
 	            hd.setAttribute('name','descripcion[]');
-	            hd.value=arreglo[f].descripcion;    
+	            hd.value=arreglo[f].descripcion;
 	            label.innerHTML=arreglo[f].descripcion;
 	            td.appendChild(hd);
 	            td.appendChild(label);
 	            //agrego el campo a la fila de la tabla
 	            tr.appendChild(td);
-	            
-	            var td = document.createElement('td');  
+
+	            var td = document.createElement('td');
 	            //creo un label
 	            var label = document.createElement('label');
 	            var hd = document.createElement('input');
 	            hd.setAttribute('type','hidden');
 	            hd.setAttribute('name','comentarios[]');
-	            hd.value=arreglo[f].comentarios;    
+	            hd.value=arreglo[f].comentarios;
 	            label.innerHTML=arreglo[f].comentarios;
 	            td.appendChild(hd);
 	            td.appendChild(label);
 	            //agrego el campo a la fila de la tabla
 	            tr.appendChild(td);
-	            
-	            
+
+
 	            //agrego la fila a el cuerpo de la tabla
 	            t.appendChild(tr);
 	        }
 
 
 	        document.getElementById('sede').value="0";
-	        document.getElementById('marca').value="";   
+	        document.getElementById('marca').value="";
 	        document.getElementById('referencia').value="";
 	        document.getElementById('cantidad').value=1;
 	        document.getElementById('descripcion').value="";
 	        document.getElementById('comentarios').value="";
 	    }
-	</script>				
+	</script>
 @stop

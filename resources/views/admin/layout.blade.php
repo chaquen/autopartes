@@ -92,14 +92,14 @@ desired effect
                   {{ auth()->user()->name }}
                 </p>
               </li>
-              
+
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-right">
                   <form method="POST" action="{{route('logout')}}">
-                   {{csrf_field()}}  
+                   {{csrf_field()}}
                     <!--<a href="#" class="btn btn-default btn-flat">Cerrar Sesión</a>-->
-                     
+
                      <button>Cerrar sesión</button>
                   </form>
 
@@ -130,7 +130,7 @@ desired effect
         </div>
       </div>
 
-     
+
 
       <!-- Menu de Opciones ...............................................................-->
       <ul class="sidebar-menu">
@@ -149,14 +149,14 @@ desired effect
             @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2)
             </li>
             <li><a href="{{ route('ordenes.crear') }}"><i class="fa fa-pencil"></i>Crear Orden</a></li>
-            @endif  
+            @endif
             @if(auth()->user()->rol_id == 1)
             <li><a href="{{ route('ordenes.index') }}"><i class="fa fa-pencil"></i>Ver Ordenes</a></li>
             <li><a href="{{ route('ordenes.cotizadas') }}"><i class="fa fa-eye"></i>Sin Asignar</a></li>
             <li><a href="{{ route('ordenes.asignadas') }}"><i class="fa fa-eye"></i>Asignadas</a></li>
             @endif
-            
-            
+
+
           </ul>
         </li>
         <li class="treeview">
@@ -203,7 +203,7 @@ desired effect
             <li><a href="{{-- route('variables.index') --}}"><i class="fa fa-eye"></i>Crear Facturas</a></li>
           </ul>
         </li>
-        
+
       </ul>
       <!-- /.sidebar-menu -->
     </section>
@@ -219,8 +219,12 @@ desired effect
 
     <!-- Main content -->
     <section class="content">
+      
       @if(session()->has('flash'))
         <div class="alert alert-success">{{ session('flash') }}</div>
+      @endif
+      @if(session()->has('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
       @endif
       <!-- Your Page Content Here -->
       @yield('contenido')
