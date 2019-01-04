@@ -16,7 +16,7 @@
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $errors->first('name') }}</strong>
                                 </span>
-                            @endif                            
+                            @endif
                         </div>
 
                         <div class="form-group col-md-6">
@@ -45,16 +45,16 @@
                                     <strong>{{ $errors->first('email') }}</strong>
                                 </span>
                             @endif
-                        </div>   
-                        {{--<div class="form-group col-md-6">
-                            <label for="direccion" class="col-form-label text-md-right">Rol</label>
-                               <select name="rol"> 
-                                {{dd($roles)}}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="rol" class="col-form-label text-md-right">Rol</label>
+                               <select name="rol" required>
+                                 <option value="0">Selecciona un rol</option>
                                 @foreach($roles as $r)
-                                    <option value="{{$r->id}}">{{$rol->nombre}}</option>
+                                    <option value="{{$r->id}}">{{$r->nombre}}</option>
                                 @endforeach
                                </select>
-                        </div>--}}                         
+                        </div>
                         {{--
                         <div class="panel panel-info col-md-12">
                             <div class="panel-heading">
@@ -118,7 +118,7 @@
                                     </thead>
 
                                     <tbody id="body_table">
-                                        
+
                                     </tbody>
                                 </table>
 
@@ -128,7 +128,7 @@
                         <div class="form-group mb-0">
                             <div class="col-md-6">
                                 <button type="submit" class="btn btn-warning" >Registrar</button>
-                                
+
 
                             </div>
                         </div>
@@ -139,7 +139,7 @@
                         var arreglo=[];
 
                         function agregar_a_list(){
-                            
+
                             var ob={
                                 nombreSede:document.getElementById('nombreSede').value,
                                 direccionSede:document.getElementById('direccionSede').value,
@@ -148,12 +148,12 @@
                             };
 
                             arreglo.push(ob);
-                            
+
                             document.getElementById('nombreSede').value="";
-                            document.getElementById('direccionSede').value="";   
+                            document.getElementById('direccionSede').value="";
                             document.getElementById('telefonoSede').value="";
                             document.getElementById('contactoSede').value="";
-                            
+
                             draw_table();
                         }
 
@@ -165,61 +165,61 @@
                             for(var f in arreglo){
 
                                 //creo un tr
-                                var tr = document.createElement('tr');  
+                                var tr = document.createElement('tr');
                                 //creo un td
-                                
-                                var td = document.createElement('td');  
+
+                                var td = document.createElement('td');
                                 //creo un label
                                 var label = document.createElement('label');
                                 var hd = document.createElement('input');
                                 hd.setAttribute('type','hidden');
                                 hd.setAttribute('name','nombreSede[]');
-                                hd.value=arreglo[f].nombreSede;    
+                                hd.value=arreglo[f].nombreSede;
                                 label.innerHTML=arreglo[f].nombreSede;
                                 td.appendChild(hd);
                                 td.appendChild(label);
                                 //agrego el campo a la fila de la tabla
                                 tr.appendChild(td);
-                                
-                                var td = document.createElement('td');  
+
+                                var td = document.createElement('td');
                                 //creo un label
                                 var label = document.createElement('label');
                                 var hd = document.createElement('input');
                                 hd.setAttribute('type','hidden');
                                 hd.setAttribute('name','direccionSede[]');
-                                hd.value=arreglo[f].direccionSede;    
+                                hd.value=arreglo[f].direccionSede;
                                 label.innerHTML=arreglo[f].direccionSede;
                                 td.appendChild(hd);
                                 td.appendChild(label);
                                 //agrego el campo a la fila de la tabla
                                 tr.appendChild(td);
-                                
-                                var td = document.createElement('td');  
+
+                                var td = document.createElement('td');
                                 //creo un label
                                 var label = document.createElement('label');
                                 var hd = document.createElement('input');
                                 hd.setAttribute('type','hidden');
                                 hd.setAttribute('name','telefonoSede[]');
-                                hd.value=arreglo[f].telefonoSede;    
+                                hd.value=arreglo[f].telefonoSede;
                                 label.innerHTML=arreglo[f].telefonoSede;
                                 td.appendChild(hd);
                                 td.appendChild(label);
                                 //agrego el campo a la fila de la tabla
                                 tr.appendChild(td);
-                                
-                                var td = document.createElement('td');  
+
+                                var td = document.createElement('td');
                                 //creo un label
                                 var label = document.createElement('label');
                                 var hd = document.createElement('input');
                                 hd.setAttribute('type','hidden');
                                 hd.setAttribute('name','contactoSede[]');
-                                hd.value=arreglo[f].contactoSede;    
+                                hd.value=arreglo[f].contactoSede;
                                 label.innerHTML=arreglo[f].contactoSede;
                                 td.appendChild(hd);
                                 td.appendChild(label);
                                 //agrego el campo a la fila de la tabla
                                 tr.appendChild(td);
-                                
+
                                 //agrego la fila a el cuerpo de la tabla
                                 t.appendChild(tr);
                             }
