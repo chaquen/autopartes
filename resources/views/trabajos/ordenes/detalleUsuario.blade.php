@@ -7,7 +7,7 @@
 	    </div>
 	    <!-- /.box-header -->
 
-	    <form class="form" method="POST" action="{{-- route('ordenes.update') --}}">
+	    <form class="form" method="POST" action="{{ route('ordenes.cotizarOrden', $orden_id) }}">
 		{{ csrf_field() }}
 	    <div class="box-body table-responsive col-md-12 bg-warning">
 	    	<input type="hidden" name="ordenId" value="{{$orden_id}}">
@@ -121,65 +121,12 @@
 	      <!--Asignar Usuario para gestionar la orden-->
 	      	<hr>
       	</div>
-		<div class="form-group col-md-offset-3">
+      	@if($detalle->estado_id == 4)
+      	<div class="form-group col-md-offset-3">
     		<button type="submit" class="btn btn-primary col-md-3">Aceptar</button>
     	</div>
+    	@endif
     	</form>
     </div>
-    <script type="text/javascript">
-    	function calculalPesoLibras(id,e,cant)
-    	{
-    		var costoFlete = e.value*document.getElementById('valorPesoLibra'+id).value;
-    		document.getElementById('costoFlete'+id).innerHTML = number_format(costoFlete, 2, ',','.');
-
-    		var totalPesoLibra = cant*document.getElementById('pesoLb'+id).value;
-    		document.getElementById('totalPesoLibra'+id).innerHTML = number_format(totalPesoLibra, 2, ',','.');
-
-    		var costoTotalFlete = costoFlete * totalPesoLibra;
-    		document.getElementById('costoTotalFlete'+id).innerHTML = number_format(costoTotalFlete, 2, ',','.');
-    	}
-
-    	function dividirItem(itemDiv, detalle_id)
-    	{
-    		console.log(itemDiv);
-    		console.log(detalle_id);
-    		console.log('cantidad'+detalle_id);
-    		console.log(Number(document.getElementById(itemDiv).value));
-
-    		if( Number(document.getElementById(itemDiv).value) > 1 && Number(document.getElementById(itemDiv).value) <= Number(document.getElementById('cantidad'+detalle_id).value) )
-        	{
-        		console.log(itemDiv);
-	    		console.log(document.getElementById(itemDiv));
-	    		console.log(document.getElementById(itemDiv).value);
-		        var t = document.getElementById('body_table'+detalle_id);
-		        //limpio lo que tenia en la tabla
-		        t.innerHTML="";
-		        
-		        for(i = 0; i < document.getElementById(itemDiv).value; i++)
-		        {
-		        	//creo un tr
-		            var tr = document.createElement('tr');  
-		            //creo un td
-		            var td = document.createElement('td');
-		            //creo el input
-		            var hd = document.createElement('input');
-		            hd.setAttribute('type','text');
-		            hd.setAttribute('name','itemDividido'+detalle_id+'[]');
-		            td.appendChild(hd);
-		            tr.appendChild(td);
-		            t.appendChild(tr);
-		        }
-        	}
-        	else
-        	{
-        		alert('El numero tiene que ser mayor a 1 y menor o igual a '+Number(document.getElementById('cantidad'+detalle_id).value))
-        	}   		
-    	}
-
-    	function crearDivisiones()
-    	{
-
-    	}
-    </script>
     
 @stop

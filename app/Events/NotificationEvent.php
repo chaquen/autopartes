@@ -21,7 +21,7 @@ class NotificationEvent
 
       public function __construct($user,$obj,$tipo)
     {
-        //dd($tipo);
+        //dd($user);
         $this->user = $user;
         $this->obj = $obj;
         $this->tipo = $tipo;

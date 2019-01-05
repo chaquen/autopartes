@@ -41,19 +41,19 @@
 	        			<td>{{ $orden->nombreConvencion }}</td>
 	        			<td>{{ $orden->Trm }}</td>
 	        			<td>{{ $orden->created_at }}</td>
-	        			<td>
-		        			<button type="button" class="btn btn-xs btn-success" data-toggle="modal" data-target="#exampleModal{{$orden->id}}">Editar</button>
+	        			<!---<td>
+		        			<button type="button" class="btn btn-xs btn-success" data-toggle="modal" data-target="#exampleModal{{--$orden->id}}">Editar</button>
 		        			<a href="" class="btn btn-xs btn-danger"><i class="fa fa-times"></i></a>
 		        			<div class="modal fade" id="exampleModal{{$orden->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
 								<form method="POST" action="{{-- route('trabajos.sedes.update',[$sede->id]) --}}">
-						    	{{ csrf_field() }}
+						    	{{-- csrf_field() }}
 							    	<div class="modal-dialog" role="document">
 
 									    <div class="modal-content">
 
 									      <div class="modal-header">
-									        <h5 class="modal-title" id="exampleModalLabel">{{$orden->id}}</h5>
+									        <h5 class="modal-title" id="exampleModalLabel">{{$orden->id--}}</h5>
 									        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									          <span aria-hidden="true">&times;</span>
 									        </button>
@@ -72,7 +72,7 @@
 									</div>								
 								</form>
 					  		</div>
-		        		</td>
+		        		</td>-->
 
 		        		
 	        		</tr>

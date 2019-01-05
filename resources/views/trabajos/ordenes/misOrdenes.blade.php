@@ -36,8 +36,14 @@
 	        			<td>{{ $orden->name }}</td>
 	        			@if($orden->nombreEstado == 'Por Cotizar Asignado' || $orden->nombreEstado == 'Por Cotizar Sin Asignar')
 	        				<td>Por Cotizar</td>
-	        			@elseif($orden->nombreEstado == 'Cotizado Sin Asignar' || $orden->nombreEstado == 'Cotizado Asignado')
+	        			@elseif($orden->nombreEstado == 'Cotizado Sin Asignar' || $orden->nombreEstado == 'Cotizado Asignado' )
         				 	<td>Cotizado</td>
+
+	        			@elseif($orden->estado_id == 4)
+	        				<td>Cotizado</td>
+
+        				@elseif($orden->estado_id == 8)
+	        				<td>Orden</td>
 	        			@endif
 
 	        			

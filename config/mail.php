@@ -54,12 +54,12 @@ return [
     | used globally for all e-mails that are sent by your application.
     |
     */
-
+    
     'from' => [
-      'address' => env('MAIL_FROM_ADDRESS',config('mail.username')),
-      'name' => env('MAIL_FROM_NAME', config('app.name')),
+      'address' => env('MAIL_FROM_ADDRESS','hello@loquesea.com'),
+      'name' => env('MAIL_FROM_NAME', 'example'),
     ],
-
+    
     /*
     |--------------------------------------------------------------------------
     | E-Mail Encryption Protocol

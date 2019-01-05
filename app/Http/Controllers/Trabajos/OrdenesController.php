@@ -16,6 +16,7 @@ use DB;
 
 class OrdenesController extends Controller
 {
+
     public function index()
     {
         $ordenes = Orden::select('ordens.id','Trm','ordens.created_at','estado_ordens.nombreEstado','users.name','convencions.nombreConvencion')
@@ -26,11 +27,11 @@ class OrdenesController extends Controller
         //dd($ordenes);
         return view('trabajos.ordenes.index', compact('ordenes'));
     }
-
+    //Listado de Ordenes por cada usuario
     public function porUsuario()
     {
         $user = auth()->user()->id;
-        $ordenes = Orden::select('ordens.id','Trm','ordens.created_at','estado_ordens.nombreEstado','users.name','convencions.nombreConvencion')
+        $ordenes = Orden::select('ordens.id','Trm','ordens.estado_id','ordens.created_at','estado_ordens.nombreEstado','users.name','convencions.nombreConvencion')
         ->join('estado_ordens','ordens.estado_id','=','estado_ordens.id')
         ->join('users','ordens.user_id','=','users.id')
         ->join('convencions','ordens.convencion_id','=','convencions.id')
@@ -39,10 +40,12 @@ class OrdenesController extends Controller
         //dd($ordenes);
         return view('trabajos.ordenes.misOrdenes', compact('ordenes'));
     }
+    //Listado de Ordenes Asignadas al usuario
 
+    //Detalle de la Orden de usuario en estado Precotizado o Cotizado ..................................
     public function detalleUsuario($orden_id)
     {
-        $detalleOrden = itemOrden::select('ordens.id','sedes.nombre','item_ordens.estadoItem_id','item_ordens.sede_id','item_ordens.id','marca','referencia','descripcion','cantidad','comentarios','pesoLb','costoUnitario','margenUsa')
+        $detalleOrden = itemOrden::select('ordens.id','ordens.estado_id','sedes.nombre','item_ordens.estadoItem_id','item_ordens.sede_id','item_ordens.id','marca','referencia','descripcion','cantidad','comentarios','pesoLb','costoUnitario','margenUsa')
         ->join('ordens','item_ordens.orden_id','=','ordens.id')
         ->join('sedes','item_ordens.sede_id','=','sedes.id')
         ->where('ordens.id','=',$orden_id)
@@ -54,6 +57,7 @@ class OrdenesController extends Controller
         return view('trabajos.ordenes.detalleUsuario', compact('detalleOrden','variables'))->with('orden_id',$orden_id);
     }
 
+    //Crear Retornar el formualrio para crear nuevas ordenes ....................................
     public function crear()
     {
     	$user = auth()->user()->id;
@@ -67,7 +71,7 @@ class OrdenesController extends Controller
 		return view('trabajos.ordenes.crear', compact('sedes','convenciones'));
     }
 
-    //metodo para almacenar las nuevas ordenes
+    //metodo para almacenar las nuevas ordenes ...................................................
     public function almacenar(Request $request)
     {
     	//dd($request);
@@ -112,10 +116,20 @@ class OrdenesController extends Controller
     }
 
     //consulta de Ordenes sin Asignar .........................................................//
-
     public function sinAsignar()
     {
-    }   
+        $sinUsuario = Orden::select('ordens.id','ordens.estado_id','ordens.created_at','estado_ordens.nombreEstado','users.name')
+        ->join('estado_ordens','ordens.estado_id','=','estado_ordens.id')
+        ->join('users','ordens.user_id','=','users.id')
+        ->whereIn('ordens.estado_id',[8,2])
+        //->where('ordens.estado_id','=',8)
+        //->orwhere('ordens.estado_id','=',2)
+        ->get();
+        //dd($sinUsuario);
+        return view('trabajos.ordenes.sinAsignar', compact('sinUsuario'));
+    }
+
+
     public function cotizadas()
     {
         //$sinUsuario = Orden::where('ordens.estado_id','=',1)->get();
@@ -130,7 +144,7 @@ class OrdenesController extends Controller
         return view('trabajos.ordenes.sinAsignar', compact('sinUsuario'));
     }
 
-    //Detalle de las ordenes sin Asignar .......................................................
+    //Detalle de las ordenes en estado PreCotizada sin Asignar ...........................................
     public function detalleCotizadas($orden_id)
     {
         $detalleOrden = itemOrden::select('sedes.nombre','item_ordens.marca','item_ordens.referencia','item_ordens.descripcion','item_ordens.cantidad','item_ordens.comentarios','item_ordens.orden_id')
@@ -147,7 +161,7 @@ class OrdenesController extends Controller
 
     //Asignar usuario a la orden ..................................................................
     public function asignarUsuarioOrden(Request $request)
-    {
+    {   
         $UserGestiona = auth()->user()->id;
 
         $historialOrden = new historialOrden;
@@ -157,10 +171,20 @@ class OrdenesController extends Controller
         $historialOrden->save();
 
         $Orden = Orden::where('id', $request->get('ordenId'))->first();
+
         $Orden->estado_id = 3;
         $Orden->update();
 
-        return redirect('trabajos/ordenes/cotizadas')->with('flash','El Usuario fue asignado');
+        $sinUsuario = Orden::select('ordens.id','ordens.created_at','estado_ordens.nombreEstado','users.name')
+        ->join('estado_ordens','ordens.estado_id','=','estado_ordens.id')
+        ->join('users','ordens.user_id','=','users.id')
+        ->whereIn('ordens.estado_id',[8,2])
+        //->where('ordens.estado_id','=',8)
+        //->orwhere('ordens.estado_id','=',2)
+        ->get();
+
+        //dd($UserGestiona);
+        return view('trabajos.ordenes.cotizadaSinAsignar', compact('sinUsuario'))->with('flash','El Usuario fue asignado');
     }
 
     //Consulta de ordenes asignada...............................................................
@@ -176,7 +200,7 @@ class OrdenesController extends Controller
         return view('trabajos.ordenes.asignadas', compact('ordenAsignadas'));
     }
 
-    //Detalle ordenes asignadas ..........................................................
+    //Detalle ordenes asignadas en estado PreCotizar .............................................
     public function detalleAsignada($orden_id)
     {
         //Seleccionamos los items correspondientes al id que traemos como parametro.
@@ -192,7 +216,7 @@ class OrdenesController extends Controller
         return view('trabajos.ordenes.detalleAsignada', compact('detalleOrden','variables'))->with('orden_id',$orden_id);
     }
 
-    //Actualización de los items de las ordenes ............................................................................
+    //Actualización de los items de las ordenes en estado PreCotizar ......................................
     public function update(Request $request)
     {
         //Recorremos si hay algun item dividido *********************************
@@ -281,18 +305,45 @@ class OrdenesController extends Controller
         return back()->with('flash','La orden ha sido actualizada');
     }
 
+    //Actulizar la orden a estado Cotizado y envio de datos al cliente ..................................
     public function cotizarOrden($orden_id)
     {
         //dd($orden_id);
         $orden = Orden::where('id', $orden_id)->first();
-        $orden->estado_id = 5;
-        $orden->update();
-        //AQUI ENVIO EL CONTROLADOR
-        //dd(User::where('id',$orden->user_id)->first());
-        NotificationEvent::dispatch(User::where('id',$orden->user_id)->first(),[$orden],"CambioEstadoCotizado");
-        //return view('trabajos.ordenes.asignadas')->with('success','Se cambio la orden a estado Cotizado y se enviaron los datos al cliente');
-        return back()->with('flash','Se cambio la orden a estado Cotizado y se enviaron los datos al cliente');
 
+        //Validamos si el estado es 3 Por cotizar Asignado y lo cambiamos a estado 4 Cotizado
+        if($orden->estado_id == 3)
+        {
+            //Cambiamos el estado de la orden
+            $orden->estado_id = 4;
+            $orden->update();
+
+            //Creamos el historial con el cambio de estado de la orden
+            $historialOrden = new historialOrden;
+            $historialOrden->orden_id = $orden_id;
+            $historialOrden->estadoActual_id = 4;
+            $historialOrden->userAsignado_id = auth()->user()->id;
+            $historialOrden->save();
+
+            //Activamos el evento para el envio del Correo
+            //NotificationEvent::dispatch(User::where('id',$orden->user_id)->first(),[$orden],"CambioEstadoCotizado");
+
+            //Retornamos a la vista anterior
+            return back()->with('flash','Se cambio la orden a estado Cotizado y se enviaron los datos al cliente');
+        }
+
+        //Validamos si el estado es 4 Cotizado y lo cambiamos a estado 8 Orden Sin Asignar
+        if($orden->estado_id == 4)
+        {
+            $orden->estado_id = 8;
+            $orden->update();
+
+            $historialOrden = new historialOrden;
+            $historialOrden->orden_id = $orden_id;
+            $historialOrden->estadoActual_id = 8;
+            $historialOrden->userAsignado_id = auth()->user()->id;
+            $historialOrden->save();
+        }
     }
 
 }
