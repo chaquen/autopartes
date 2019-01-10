@@ -37,6 +37,10 @@
 	        				<td>Por Cotizar</td>
 	        			@elseif($orden->nombreEstado == 'Cotizado Sin Asignar' || $orden->nombreEstado == 'Cotizado Asignado')
         				 	<td>Cotizado</td>
+    				 	@elseif($orden->estado_id == 4)
+    				 	<td>Cotizado</td>
+    				 	@elseif($orden->estado_id == 8)
+    				 	<td>Orden</td>
 	        			@endif
 	        			<td>{{ $orden->nombreConvencion }}</td>
 	        			<td>{{ $orden->Trm }}</td>

@@ -3,7 +3,7 @@
 @section('header')
 	<h1>
 	    Ordenes asignadas
-	    <small> En esta sección estan las ordenes de Santiago y Tita.</small>
+	    <small> En esta sección estan las ordenes asignadas a {{auth()->user()->name}}.</small>
   	</h1>
   	<ol class="breadcrumb">
 	    <li class="active">Ordenes</li>

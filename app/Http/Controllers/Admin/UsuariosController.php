@@ -65,8 +65,8 @@ class UsuariosController extends Controller
         //dd($user);
         //dd($pass);
         //Enviamos el email con las credenciales de acceso
-        UsuarioCreado::dispatch($user, $pass);
-        return redirect('admin')->with('flash','El usuario fue creado exitosamente');
+        //UsuarioCreado::dispatch($user, $pass);
+        return back()->with('flash','El usuario fue creado exitosamente');
     }
     public function actualizar_usuario(Request $request)
     {

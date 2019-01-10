@@ -42,7 +42,7 @@
 	        			@elseif($orden->estado_id == 4)
 	        				<td>Cotizado</td>
 
-        				@elseif($orden->estado_id == 8)
+        				@elseif($orden->estado_id == 8 || $orden->estado_id == 9)
 	        				<td>Orden</td>
 	        			@endif
 

@@ -145,10 +145,14 @@ desired effect
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="{{ route('ordenes.misOrdenes') }}"><i class="fa fa-user"></i>Mis Ordenes</a>
             </li>
+            @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2)
+            <li><a href="{{ route('ordenes.misAsignadas') }}"><i class="fa fa-pencil"></i>Mis Asignadas</a></li>
+            @endif
             @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 3)
+            <li><a href="{{ route('ordenes.misOrdenes') }}"><i class="fa fa-user"></i>Mis Ordenes</a>
             <li><a href="{{ route('ordenes.crear') }}"><i class="fa fa-pencil"></i>Crear Orden</a></li>
+            <li><a href="{{ route('ordenes.editar') }}"><i class="fa fa-pencil"></i>Editar Orden</a></li>
             @endif
             @if(auth()->user()->rol_id == 1)
             <li><a href="{{ route('ordenes.index') }}"><i class="fa fa-pencil"></i>Ver Ordenes</a></li>
@@ -159,6 +163,7 @@ desired effect
 
           </ul>
         </li>
+        @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 3)
         <li class="treeview">
           <a href="#"><i class="fa fa-building"></i> <span>Sedes</span>
             <span class="pull-right-container">
@@ -170,6 +175,17 @@ desired effect
             <li><a href="{{ route('sedes.index') }}"><i class="fa fa-eye"></i>Ver Sedes</a></li>
           </ul>
         </li>
+        <li class="treeview">
+          <a href="#"><i class="fa fa-file"></i> <span>Factura</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="{{-- route('variables.index') --}}"><i class="fa fa-eye"></i>Crear Facturas</a></li>
+          </ul>
+        </li>
+        @endif
         @if(auth()->user()->rol_id == 1)
         <li class="treeview">
           <a href="#"><i class="fa fa-indent"></i> <span>Variables</span>
@@ -193,16 +209,6 @@ desired effect
           </ul>
         </li>
         @endif
-        <li class="treeview">
-          <a href="#"><i class="fa fa-file"></i> <span>Factura</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li><a href="{{-- route('variables.index') --}}"><i class="fa fa-eye"></i>Crear Facturas</a></li>
-          </ul>
-        </li>
 
       </ul>
       <!-- /.sidebar-menu -->
@@ -228,6 +234,8 @@ desired effect
       @endif
       <!-- Your Page Content Here -->
       @yield('contenido')
+      
+      @yield('totalSede')
 
     </section>
     <!-- /.content -->

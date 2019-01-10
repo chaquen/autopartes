@@ -23,6 +23,7 @@
 		        		<th>Cantidad</th>
 		        		<th>Comentarios</th>
 		        		<th>Peso Lbs</th>
+		        		<th>Peso Promedio</th>
 		        		<th>Total Peso Libra</th>
 		        		<th>Costo Flete Unidad</th>
 		        		<th>Costo Total Flete</th>
@@ -42,144 +43,155 @@
 		        </thead>
 		        
 		        <tbody id="detalle">
-		        			@php
-		        				$item = 0;
-		        			@endphp
-			        	@foreach($detalleOrden as $detalle)
-			        		@php			        			
-			        			$item++;
-			        		@endphp	
-			        		<tr>
-			        			<td>
-			        				{{ $item }}
-			        			</td>
-			        			<td>{{ $detalle->id }}</td>
-			        			<td>
-			        				{{ $detalle->nombre }}
-			        				<input type="hidden" name="sede[]" value="{{ $detalle->nombre }}">
-			        				<input type="hidden" name="sedeId[]" value="{{ $detalle->sede_id }}">
-			        			</td>
-			        			<td>
-			        				{{ $detalle->marca }}
-			        				<input type="hidden" name="marca[]" value="{{ $detalle->marca }}">
-			        			</td>
-			        			<td>
-			        				{{ $detalle->referencia }}
-			        				<input type="hidden" name="referencia[]" value="{{ $detalle->referencia }}">
-			        			</td>
-			        			<td>
-			        				{{ $detalle->descripcion }}
-			        				<input type="hidden" name="descripcion[]" value="{{ $detalle->descripcion }}">
-			        			</td>
-			        			<td>
-			        				{{ $detalle->cantidad }}
-			       	 				<input type="hidden" id="cantidad{{ $detalle->id }}" name="cantidad[]" value="{{ $detalle->cantidad }}">
-			        			</td>
-			        			<td>
-			        				{{ $detalle->comentarios }}
-			        				<input type="hidden" name="comentarios[]" value="{{ $detalle->comentarios }}">
-			        			</td>
-			        			<td>
-			        				<input name="pesoLb[]" id="pesoLb{{$detalle->id}}" value="{{$detalle->pesoLb}}" onchange="calculalPesoLibras({{$detalle->id}},this,{{$detalle->cantidad}})">
+        			@php
+        				$item = 0;
+        			@endphp
+		        	@foreach($detalleOrden as $detalle)
+		        		@php			        			
+		        			$item++;
+		        		@endphp
+		        		@php
+	        				$costoFleteUnidad = $variables[1]->valor * $detalle->pesoLb;
+	        				$totalPeso = $detalle->cantidad * $detalle->pesoLb;
+	        				$costoTotalFlete = $costoFleteUnidad * $totalPeso;	        				
+	        			@endphp
+	        			@php
+        					$a = $detalle->costoUnitario;
+        					$b = $detalle->margenUsa;
+        					$prom = $a * $b / 100;
 
-			        				<input type="hidden" id="valorPesoLibra{{$detalle->id}}" value="{{$variables[1]->valor}}">
-			        			</td>
-			        			@php
-			        				$costoFleteUnidad = $variables[1]->valor * $detalle->pesoLb;
-			        				$totalPeso = $detalle->cantidad * $detalle->pesoLb;
-			        				$costoTotalFlete = $costoFleteUnidad * $totalPeso;
-			        				
-			        			@endphp	
-			        			<td class="bg-success">
-			        				<label id="totalPesoLibra{{$detalle->id}}">{{$totalPeso}}</label>
-			        			</td>			        			        			
-			        			<td class="bg-danger">
-			        				<label id="costoFlete{{$detalle->id}}">{{$costoFleteUnidad}}</label>
-			        			</td>
-			        			<td class="bg-danger">
-			        				<label id="costoTotalFlete{{$detalle->id}}">{{$costoTotalFlete}}</label>
-			        			</td>
-		        				<td>
-		        					<input name="costoUnitario[]" value="{{$detalle->costoUnitario}}">
-		        				</td>  			
-			        			<td>
-			        				<input name="margenUsa[]" value="{{$detalle->margenUsa}}"></td>
-			        			</td>
-			        				@php
-			        					$a = $detalle->costoUnitario;
-			        					$b = $detalle->margenUsa;
-			        					$prom = $a * $b / 100;
+        					$c = $costoTotalFlete;
+        					$d = $detalle->cantidad;
 
-			        					$c = $costoTotalFlete;
-			        					$d = $detalle->cantidad;
+        					$e = $c / $d;
 
-			        					$e = $c / $d;
+        					$precioVenta = $a+$prom+$e;
+        					$precioTotal = $precioVenta * $detalle->cantidad
+        				@endphp
 
-			        					$precioVenta = $a+$prom+$e;
-			        				@endphp
-		        				<td>
-		        					<label>{{ $precioVenta }}</label>
-		        				</td>
-		        				<td></td>
-			        			<td>
-			        				@if($detalle->cantidad > 1)
-			        					<button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#exampleModalCenter{{ $detalle->id }}">Dividir</button>	
-					    			@endif	
-					    			<div class="modal fade" id="exampleModalCenter{{ $detalle->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-									  	<div class="modal-dialog modal-dialog-centered" role="document">
-										    <div class="modal-content">
-										      <div class="modal-header">
-										        <h5 class="modal-title" id="exampleModalCenterTitle">División del Item {{ $detalle->id }}</h5>
-										        <h5>Cantidad del Item {{ $detalle->cantidad }}</h5>
-										        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-										          <span aria-hidden="true">&times;</span>
-										        </button>
-										      </div>
-										      <div class="modal-body">
-										        <div class="form-group">
-									    			<label>¿En cuantos Items, desea dividirlo?</label>
-									    			<input type="number" name="itemDiv" id="itemDiv{{ $detalle->id }}" class="form-control" placeholder="Ingrese la cantidad"/>
+		        		<tr>
+		        			<td>{{ $item }}</td>
+		        			<td>{{ $detalle->id }}</td>
+		        			<td>
+		        				{{ $detalle->nombre }}
+		        				<input type="hidden" name="sede[]" value="{{ $detalle->nombre }}">
+		        				<input type="hidden" name="sedeId[]" value="{{ $detalle->sede_id }}">
+		        			</td>
+		        			<td>
+		        				{{ $detalle->marca }}
+		        				<input type="hidden" name="marca[]" value="{{ $detalle->marca }}">
+		        			</td>
+		        			<td>
+		        				{{ $detalle->referencia }}
+		        				<input type="hidden" name="referencia[]" value="{{ $detalle->referencia }}">
+		        			</td>
+		        			<td>
+		        				{{ $detalle->descripcion }}
+		        				<input type="hidden" name="descripcion[]" value="{{ $detalle->descripcion }}">
+		        			</td>
+		        			<td>
+		        				{{ $detalle->cantidad }}
+		       	 				<input type="hidden" id="cantidad{{ $detalle->id }}" name="cantidad[]" value="{{ $detalle->cantidad }}">
+		        			</td>
+		        			<td>
+		        				{{ $detalle->comentarios }}
+		        				<input type="hidden" name="comentarios[]" value="{{ $detalle->comentarios }}">
+		        			</td>
+		        			<td>
+		        				<input name="pesoLb[]" id="pesoLb{{$detalle->id}}" value="{{$detalle->pesoLb}}" onchange="calculalPesoLibras({{$detalle->id}},this,{{$detalle->cantidad}})">
 
-									    		</div>
-									    		
-									    		<div class="form-group">
-									    			<input class="btn btn-warning" type="button" value="Dividir Item" onclick="dividirItem('itemDiv{{ $detalle->id }}', '{{ $detalle->id }}')">
-									    		</div>
+		        				<input type="hidden" id="valorPesoLibra{{$detalle->id}}" value="{{$variables[1]->valor}}">
+		        			</td>
+		        			<td>
+		        				@foreach($detallePeso as $detalleP)
+		        					@if($detalle->sede_id == $detalleP->sede_id)
+		        						@if($detalleP->PesoSede < 9)
+		        							@php
+		        							$promedio = (float) 9 / (float) $detalleP->cantidadSede;
+		        							@endphp
+		        							<label>{{ $promedio }}</label>
+	        							@else
+	        								<label>{{ $detalle->pesoLb }}</label>
+        								@endif
+		        					@endif	
+		        				@endforeach
+		        				
+		        			</td>
+		        			<td class="bg-success">
+		        				<label id="totalPesoLibra{{$detalle->id}}">{{$totalPeso}}</label>
+		        			</td>			        			        			
+		        			<td class="bg-danger">
+		        				<label id="costoFlete{{$detalle->id}}">{{$costoFleteUnidad}}</label>
+		        			</td>
+		        			<td class="bg-danger">
+		        				<label id="costoTotalFlete{{$detalle->id}}">{{$costoTotalFlete}}</label>
+		        			</td>
+	        				<td>
+	        					<input name="costoUnitario[]" value="{{$detalle->costoUnitario}}">
+	        				</td>  			
+		        			<td>
+		        				<input name="margenUsa[]" value="{{$detalle->margenUsa}}">
+		        			</td>
+		        				
+	        				<td>
+	        					<label>{{ $precioVenta }}</label>
+	        				</td>
+	        				<td class="bg-primary">
+	        					<label>{{ $precioTotal }}</label>
+	        				</td>
+		        			<td>
+		        				@if($detalle->cantidad > 1)
+		        					<button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#exampleModalCenter{{ $detalle->id }}">Dividir</button>	
+				    			@endif	
+				    			<div class="modal fade" id="exampleModalCenter{{ $detalle->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+								  	<div class="modal-dialog modal-dialog-centered" role="document">
+									    <div class="modal-content">
+									      <div class="modal-header">
+									        <h5 class="modal-title" id="exampleModalCenterTitle">División del Item {{ $detalle->id }}</h5>
+									        <h5>Cantidad del Item {{ $detalle->cantidad }}</h5>
+									        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									          <span aria-hidden="true">&times;</span>
+									        </button>
+									      </div>
+									      <div class="modal-body">
+									        <div class="form-group">
+								    			<label>¿En cuantos Items, desea dividirlo?</label>
+								    			<input type="number" name="itemDiv" id="itemDiv{{ $detalle->id }}" class="form-control" placeholder="Ingrese la cantidad"/>
 
-									    		<table id="body_table{{ $detalle->id }}">
-									    			
-									    		</table>
-										      </div>
-										      <div class="modal-footer">
-										        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-										        <button type="button" class="btn btn-primary" onclick="crearDivisiones()">Aceptar</button>
-										      </div>
-										    </div>
-							  			</div>
-									</div>		        				
-			        			</td>
-			        			
-			        			<td><input type="hidden" name="detalle_id[]" value="{{$detalle->id}}"></td>
-			        		</tr>
-			        	@endforeach
+								    		</div>
+								    		
+								    		<div class="form-group">
+								    			<input class="btn btn-warning" type="button" value="Dividir Item" onclick="dividirItem('itemDiv{{ $detalle->id }}', '{{ $detalle->id }}')">
+								    		</div>
+
+								    		<table id="body_table{{ $detalle->id }}">
+								    			
+								    		</table>
+									      </div>
+									      <div class="modal-footer">
+									        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+									        <button type="button" class="btn btn-primary" onclick="crearDivisiones()">Aceptar</button>
+									      </div>
+									    </div>
+						  			</div>
+								</div>		        				
+		        			</td>
+		        			
+		        			<td><input type="hidden" name="detalle_id[]" value="{{$detalle->id}}"></td>
+		        		</tr>
+		        	@endforeach
 		        	
 		        </tbody>
 		      	</table>
 	      <!--Seccion solo para el Administrador-->
 	      <!--Asignar Usuario para gestionar la orden-->
-	      	<hr>
       	</div>
-		<div class="form-group col-md-offset-3">
-    		<button type="submit" class="btn btn-primary col-md-3">Actualizar la Orden</button>
+		<div class="form-group col-md-12">
+    		<button type="submit" class="btn btn-primary col-md-offset-5">Actualizar la Orden</button>
     	</div>
     	</form>
+
     	<!--Actualizar la orden a cotizado y enviar los datos al cliente-->
-    	<form class="form" method="POST" action="{{ route('ordenes.cotizarOrden',$orden_id) }}">
-    		{{ csrf_field() }}
-    		<div class="form-group col-md-4">
-	    		<button type="submit" class="btn btn-success col-md-5">Enviar al Cliente</button>
-	    	</div>
-    	</form>
     </div>
     <script type="text/javascript">
     	function calculalPesoLibras(id,e,cant)
@@ -227,7 +239,7 @@
         	}
         	else
         	{
-        		alert('El numero tiene que ser mayor a 1 y menor o igual a '+Number(document.getElementById('cantidad'+detalle_id).value))
+        		alert('El numero tiene que ser mayor a 1 y menor o igual a '+Number(document.getElementById('cantidad'+detalle_id).value));
         	}   		
     	}
 
@@ -237,4 +249,37 @@
     	}
     </script>
     
+@stop
+
+@section('totalSede')
+	<div class="box box-warning col-md-6">
+	    <!-- /.box-header -->
+	    <div class="box-body table-responsive col-md-6 bg-warning">
+	    	<input type="hidden" name="ordenId" value="{{$orden_id}}">
+	    	<table class="table table-bordered table-striped table-hover">
+	    		<thead>
+    				<tr>
+    					<td>Sede</td>
+    					<td>Articulos por Sede</td>
+    					<td>Peso Lb por sede</td>
+    				</tr>
+				</thead>
+    			<tbody>
+    				@foreach($detallePeso as $detalle)
+    					<tr>
+    						<td>{{ $detalle->nombre }}</td>
+    						<td>{{ $detalle->cantidadProductos }}</td>
+    						<td>{{ $detalle->PesoSede }}</td>
+    					</tr>
+    				@endforeach
+    			</tbody>	
+      		</table>
+      	</div>
+      	<form class="form col-md-4" method="POST" action="{{ route('ordenes.cotizarOrden',$orden_id) }}">
+			{{ csrf_field() }}
+			<div class="form-group">
+				<button type="submit" class="btn btn-success">Enviar al Cliente</button>
+			</div>
+		</form>
+  	</div>
 @stop

@@ -32,8 +32,15 @@ Route::group(['prefix'=>'admin','namespace'=>'Admin','middleware'=>'auth'], func
 Route::group(['prefix'=>'trabajos','namespace'=>'Trabajos','middleware'=>'auth'], function(){
 
     //Rutas de las ordenes
+    Route::get('ordenes/editar','OrdenesController@editar')->name('ordenes.editar');
+    Route::post('ordenes/Actualizar','OrdenesController@actualizarEdicion')->name('ordenes.actualizarEdicion');
+    //Consulta de todas las ordenes
     Route::get('ordenes/index','OrdenesController@index')->name('ordenes.index');
+    //Consulta de ordenes creadas por el usuario logueado
     Route::get('ordenes/misOrdenes','OrdenesController@porUsuario')->name('ordenes.misOrdenes');
+    //Consulta de las ordenes asignadas al usuario logueado
+    Route::get('ordenes/misOrdenesAsignadas','OrdenesController@misAsignadas')->name('ordenes.misAsignadas');
+
     Route::get('ordenes/detalleUsuario/{orden_id}','OrdenesController@detalleUsuario')->name('ordenes.detalleUsuario');
     Route::get('ordenes/crear','OrdenesController@crear')->name('ordenes.crear');
     Route::post('ordenes/almacenar','OrdenesController@almacenar')->name('ordenes.almacenar');
@@ -57,6 +64,7 @@ Route::group(['prefix'=>'trabajos','namespace'=>'Trabajos','middleware'=>'auth']
     Route::post('variables/{variable_id}', 'VariableController@update')->name('trabajos.variables.update');
 
 });
+
 Route::get('/clearcache', function(){
       Artisan::call('cache:clear');
       Artisan::call('config:clear');

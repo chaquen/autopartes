@@ -16,6 +16,7 @@ class SedesController extends Controller
 		$sedes = Sede::select('id','nombre','telefono','direccion','contactoSede')
 		->where('user_id','=',$user)
 		->get();
+        //dd($sedes);
 		return view('trabajos.sedes.index', compact('sedes'));
 
 	}
@@ -45,13 +46,19 @@ class SedesController extends Controller
     {	
     	//dd($sede_id);
     	$sede = Sede::where('id', $sede_id)->first();
-    	$sede->valor = $request->get('nombre');
-    	$sede->valor = $request->get('direccion');
-    	$sede->valor = $request->get('telefono');
-    	$sede->valor = $request->get('contacto');
+    	$sede->nombre = $request->get('nombre');
+    	$sede->direccion = $request->get('direccion');
+    	$sede->telefono = $request->get('telefono');
+    	$sede->contactoSede = $request->get('contacto');
     	$sede->update();
 
-		return view('trabajos.sedes.index')->with('success','Se actualizo exitosamente');
+        $user = auth()->user()->id;
+
+        $sedes = Sede::select('id','nombre','telefono','direccion','contactoSede')
+        ->where('user_id','=',$user)
+        ->get();
+        //dd($sedes);
+        return view('trabajos.sedes.index', compact('sedes'))->with('success','Se actualizo exitosamente');
         //return view('admin.variables.index')->with('success','Se actualizo exitosamente');
     }
 }

@@ -23,6 +23,7 @@
 		        		<th>Cantidad</th>
 		        		<th>Comentarios</th>
 		        		<th>Peso Lbs</th>
+		        		<th>Peso Promedio</th>
 		        		<th>Total Peso Libra</th>
 		        		<th>Costo Flete Unidad</th>
 		        		<th>Costo Total Flete</th>
@@ -86,6 +87,20 @@
 			        			@endphp	
 			        			<td class="bg-success">
 			        				<label id="totalPesoLibra{{$detalle->id}}">{{$totalPeso}}</label>
+			        			</td>
+			        			<td>
+			        				@foreach($detallePeso as $detalleP)
+			        					@if($detalle->sede_id == $detalleP->sede_id)
+			        						@if($detalleP->PesoSede < 9)
+			        							@php
+			        							$promedio = (float) 9 / (float) $detalleP->cantidadSede;
+			        							@endphp
+			        							<label>{{ $promedio }}</label>
+		        							@else
+		        								<label>{{ $detalle->pesoLb }}</label>
+	        								@endif
+			        					@endif	
+			        				@endforeach
 			        			</td>			        			        			
 			        			<td class="bg-danger">
 			        				<label id="costoFlete{{$detalle->id}}">$US {{$costoFleteUnidad}}</label>
@@ -129,4 +144,31 @@
     	</form>
     </div>
     
+@stop
+
+@section('totalSede')
+	<div class="box box-warning col-md-6">
+	    <!-- /.box-header -->
+	    <div class="box-body table-responsive col-md-6 bg-warning">
+	    	<input type="hidden" name="ordenId" value="{{$orden_id}}">
+	    	<table class="table table-bordered table-striped table-hover">
+	    		<thead>
+    				<tr>
+    					<td>Sede</td>
+    					<td>Articulos por Sede</td>
+    					<td>Peso Lb por sede</td>
+    				</tr>
+				</thead>
+    			<tbody>
+    				@foreach($detallePeso as $detalle)
+    					<tr>
+    						<td>{{ $detalle->nombre }}</td>
+    						<td>{{ $detalle->cantidadProductos }}</td>
+    						<td>{{ $detalle->PesoSede }}</td>
+    					</tr>
+    				@endforeach
+    			</tbody>	
+      		</table>
+      	</div>
+  	</div>
 @stop
