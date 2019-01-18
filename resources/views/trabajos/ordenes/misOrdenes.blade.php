@@ -17,7 +17,7 @@
 	    <!-- /.box-header -->
 	    <div class="box-body">
 	      <table id="sedes-table" class="table table-bordered table-striped">
-	        <thead>
+	        <thead class="bg-primary">
 	        	<tr>
 	        		<th>id</th>
 	        		<th>Cliente</th>
@@ -29,7 +29,7 @@
 	        	</tr>
 	        </thead>
 	        
-	        <tbody> 
+	        <tbody class="bg-success"> 
 	        	@foreach($ordenes as $orden)	
 	        		<tr>
 	        			<td>{{ $orden->id }}</td>
@@ -51,12 +51,13 @@
 	        			<td>{{ $orden->Trm }}</td>
 	        			<td>{{ $orden->created_at }}</td>
 	        			<td>
-	        				<a href="{{ route('ordenes.detalleUsuario', $orden->id) }}" class="btn btn-xs btn-warning"><i class="fa fa-eye"></i> Ver Detalle</a>
-		        			
-		        			<a href="" class="btn btn-xs btn-danger"><i class="fa fa-times"></i></a>
-		        		</td>
 
-		        		
+	        				<a href="{{ route('ordenes.detalleUsuario', $orden->id) }}" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i> Ver Detalle</a>
+	        				@if($orden->estado_id == 3 || $orden->estado_id == 4 || $orden->estado_id == 2)
+	        					<a href="{{ route('ordenes.editar', $orden->id) }}" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>
+		        				<a href="" class="btn btn-xs btn-danger"><i class="fa fa-times"></i></a>
+	        				@endif		        			
+		        		</td>		        		
 	        		</tr>
 	        	@endforeach
 	        	

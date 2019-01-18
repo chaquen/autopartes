@@ -31,7 +31,7 @@
 		        	@foreach($ordenAsignadas as $orden)	
 		        		<tr>
 		        			<td>{{ $orden->id }}</td>
-		        			@if($orden->nombreEstado == 'Por Cotizar Asignado' || $orden->nombreEstado == 'Por Cotizar Sin Asignar')
+		        			@if($orden->estado_id == 3 || $orden->nombreEstado == 'Por Cotizar Sin Asignar')
 	        				<td>Por Cotizar</td>
 	        			@elseif($orden->nombreEstado == 'Cotizado Sin Asignar' || $orden->nombreEstado == 'Cotizado Asignado')
         				 	<td>Cotizado</td>
@@ -42,7 +42,9 @@
 		        			<td>{{ $orden->created_at }}</td>
 		        			<td>
 		        				@if($orden->estado_id == 3)
-		        				<a href="{{ route('detalle.asignadas', $orden->id) }}" class="btn btn-xs btn-warning"><i class="fa fa-eye"></i> Ver Detalle</a>
+		        					<a href="{{ route('detalle.asignadas', $orden->id) }}" class="btn btn-xs btn-warning"><i class="fa fa-eye"></i> Ver Detalle</a>
+	        					@elseif($orden->estado_id == 9)
+	        						<a href="{{ route('detalle.asignadasOrden', $orden->id) }}" class="btn btn-xs btn-warning"><i class="fa fa-eye"></i> Ver Detalle</a>
 		        				@endif
 			        			<a href="" class="btn btn-xs btn-danger"><i class="fa fa-times"></i></a>
 			        		</td>

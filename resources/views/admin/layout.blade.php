@@ -16,6 +16,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+
+  @stack('styles')
   <!-- Theme style -->
   <link rel="stylesheet" href="{{asset('adminLte/css/AdminLTE.min.css')}}">
   <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
@@ -149,10 +151,9 @@ desired effect
             @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2)
             <li><a href="{{ route('ordenes.misAsignadas') }}"><i class="fa fa-pencil"></i>Mis Asignadas</a></li>
             @endif
-            @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 3)
+            @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 3 || auth()->user()->rol_id == 4)
             <li><a href="{{ route('ordenes.misOrdenes') }}"><i class="fa fa-user"></i>Mis Ordenes</a>
             <li><a href="{{ route('ordenes.crear') }}"><i class="fa fa-pencil"></i>Crear Orden</a></li>
-            <li><a href="{{ route('ordenes.editar') }}"><i class="fa fa-pencil"></i>Editar Orden</a></li>
             @endif
             @if(auth()->user()->rol_id == 1)
             <li><a href="{{ route('ordenes.index') }}"><i class="fa fa-pencil"></i>Ver Ordenes</a></li>
@@ -163,7 +164,7 @@ desired effect
 
           </ul>
         </li>
-        @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 3)
+        @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 3 || auth()->user()->rol_id == 4)
         <li class="treeview">
           <a href="#"><i class="fa fa-building"></i> <span>Sedes</span>
             <span class="pull-right-container">
@@ -182,7 +183,11 @@ desired effect
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="{{-- route('variables.index') --}}"><i class="fa fa-eye"></i>Crear Facturas</a></li>
+            <li><a href="{{-- route('variables.index') --}}"><i class="fa fa-eye"></i>Mis Facturas</a></li>
+            @if(auth()->user()->rol_id == 1)
+              <li><a href="{{ route('facturas.orden') }}"><i class="fa fa-pencil"></i>Crear Facturas por Orden</a></li>
+              <li><a href="{{-- route('facturas.item') --}}"><i class="fa fa-pencil"></i>Crear Facturas por Item</a></li>
+            @endif
           </ul>
         </li>
         @endif
@@ -334,7 +339,7 @@ desired effect
 <!-- ./wrapper -->
 
 <!-- REQUIRED JS SCRIPTS -->
-
+@stack('scripts')
 <!-- jQuery 2.2.3 -->
 <script src="{{asset('adminLte/plugins/jQuery/jquery-2.2.3.min.js')}}"></script>
 <!-- Bootstrap 3.3.6 -->

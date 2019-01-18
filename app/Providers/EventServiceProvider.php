@@ -16,6 +16,18 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\UsuarioCreado' => [
             'App\Listeners\CredencialesLogin',
         ],
+        'App\Events\OrdenCreada' => [
+            'App\Listeners\EnviarDatosOrdenCreada',
+        ],
+        'App\Events\OrdenAsignada' => [
+            'App\Listeners\EnviarDatosOrdenAsignada',
+        ],
+        'App\Events\OrdenAceptada' => [
+            'App\Listeners\EnviarDatosOrdenAceptada',
+        ],
+        'App\Events\SolicitudNegociacionOrden' => [
+            'App\Listeners\EnviarDatosNegociacionOrden',
+        ],
         'App\Events\NotificationEvent' =>[
             'App\Listeners\SendNotification',
         ],

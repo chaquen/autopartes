@@ -56,8 +56,9 @@ class UsersTableSeeder extends Seeder
         $user->password = bcrypt('123');
         $user->telefono = "2983754";
         $user->direccion = "Cr 84 #29 - 74";
-        $user->rol_id = 3;
+        $user->rol_id = 4;
         $user->save();
+
 
     }
 }

@@ -31,7 +31,6 @@
 		        		<th>Margen USA</th>
 		        		<th>Precio Unitario USD</th>
 		        		<th>Precio Total USD</th>
-		        		<th>Dividir el Item</th>
 		        		
 		        		<!--<th>Venta Unitario</th>
 		        		<th>Total USD</th>
@@ -51,7 +50,7 @@
 		        			$item++;
 		        		@endphp
 		        		@php
-	        				$costoFleteUnidad = $variables[1]->valor * $detalle->pesoLb;
+	        				$costoFleteUnidad = $variables[1]->valor * $detalle->pesoPromedio;
 	        				$totalPeso = $detalle->cantidad * $detalle->pesoLb;
 	        				$costoTotalFlete = $costoFleteUnidad * $totalPeso;	        				
 	        			@endphp
@@ -109,6 +108,7 @@
 		        							@php
 		        							$promedio = (float) 9 / (float) $detalleP->cantidadSede;
 		        							@endphp
+		        							<input type="hidden" name="pesoPromedio" value="{{ $promedio }}">
 		        							<label>{{ $promedio }}</label>
 	        							@else
 	        								<label>{{ $detalle->pesoLb }}</label>
@@ -118,13 +118,46 @@
 		        				
 		        			</td>
 		        			<td class="bg-success">
-		        				<label id="totalPesoLibra{{$detalle->id}}">{{$totalPeso}}</label>
+		        				@foreach($detallePeso as $detalleP)
+		        					@if($detalle->sede_id == $detalleP->sede_id)
+		        						@if($detalleP->PesoSede < 9)
+		        							@php
+		        							$promedio = (float) 9 / (float) $detalleP->cantidadSede;
+		        							$pesoTotal = $promedio;
+		        							@endphp
+		        							<label>{{ $pesoTotal }}</label>
+	        							@else
+	        								@php
+	        									$pesoTotal = $detalle->pesoLb * $detalle->cantidad;
+        									@endphp
+    										<label>{{ $pesoTotal }}</label>
+        								@endif
+		        					@endif	
+		        				@endforeach
 		        			</td>			        			        			
 		        			<td class="bg-danger">
 		        				<label id="costoFlete{{$detalle->id}}">{{$costoFleteUnidad}}</label>
 		        			</td>
 		        			<td class="bg-danger">
-		        				<label id="costoTotalFlete{{$detalle->id}}">{{$costoTotalFlete}}</label>
+		        				@foreach($detallePeso as $detalleP)
+		        					@if($detalle->sede_id == $detalleP->sede_id)
+		        						@if($detalleP->PesoSede < 9)
+		        							@php
+			        							$promedio = (float) 9 / (float) $detalleP->cantidadSede;
+			        							$costoTotalFlete = $promedio * $variables[1]->valor;
+			        							$totalFlete = $costoTotalFlete * $detalle->cantidad;
+
+		        							@endphp
+		        							<label>{{ $totalFlete }}</label>
+	        							@else
+	        								@php
+	        									$costoTotalFlete = $detalle->pesoLb * $variables[1]->valor;
+	        									$totalFlete = $costoTotalFlete * $detalle->cantidad;	
+	        								@endphp
+	        								<label id="costoTotalFlete{{$detalle->id}}">{{$totalFlete}}</label>
+        								@endif
+		        					@endif	
+		        				@endforeach
 		        			</td>
 	        				<td>
 	        					<input name="costoUnitario[]" value="{{$detalle->costoUnitario}}">
@@ -134,10 +167,69 @@
 		        			</td>
 		        				
 	        				<td>
-	        					<label>{{ $precioVenta }}</label>
+	        					@foreach($detallePeso as $detalleP)
+		        					@if($detalle->sede_id == $detalleP->sede_id)
+		        						@if($detalleP->PesoSede < 9)
+		        							@php
+			        							$promedio = (float) 9 / (float) $detalleP->cantidadSede;
+			        							$costoTotalFlete = $promedio * $variables[1]->valor;
+
+			        							$a = $detalle->costoUnitario;
+					        					$b = $detalle->margenUsa;
+					        					$prom = $a * $b / 100;
+
+					        					$precioUnidad = $a + $prom + $costoTotalFlete;
+
+		        							@endphp
+		        							<input type="hidden" name="pesoPromedio" value="{{ $promedio }}">
+		        							<label>{{ $precioUnidad }}</label>
+	        							@else
+	        								@php
+	        									$costoTotalFlete = $detalle->pesoLb * $variables[1]->valor;
+
+	        									$a = $detalle->costoUnitario;
+					        					$b = $detalle->margenUsa;
+					        					$prom = $a * $b / 100;
+
+					        					$precioUnidad = $a + $prom + $costoTotalFlete;	
+	        								@endphp
+	        								<label id="costoTotalFlete{{$detalle->id}}">{{$precioUnidad}}</label>
+        								@endif
+		        					@endif	
+		        				@endforeach
 	        				</td>
 	        				<td class="bg-primary">
-	        					<label>{{ $precioTotal }}</label>
+	        					@foreach($detallePeso as $detalleP)
+		        					@if($detalle->sede_id == $detalleP->sede_id)
+		        						@if($detalleP->PesoSede < 9)
+		        							@php
+			        							$promedio = (float) 9 / (float) $detalleP->cantidadSede;
+			        							$costoTotalFlete = $promedio * $variables[1]->valor;
+
+			        							$a = $detalle->costoUnitario;
+					        					$b = $detalle->margenUsa;
+					        					$prom = $a * $b / 100;
+
+					        					$precioUnidad = $a + $prom + $totalFlete;
+					        					$precioTotal = $precioUnidad * $detalle->cantidad;
+
+		        							@endphp
+		        							<label>{{ $precioTotal }}</label>
+	        							@else
+	        								@php
+	        									$costoTotalFlete = $detalle->pesoLb * $variables[1]->valor;
+
+	        									$a = $detalle->costoUnitario;
+					        					$b = $detalle->margenUsa;
+					        					$prom = $a * $b / 100;
+
+					        					$precioUnidad = $a + $prom + $totalFlete;
+					        					$precioTotal = $precioUnidad * $detalle->cantidad;	
+	        								@endphp
+	        								<label id="costoTotalFlete{{$detalle->id}}">{{$precioTotal}}</label>
+        								@endif
+		        					@endif	
+		        				@endforeach
 	        				</td>
 		        			<td>
 		        				@if($detalle->cantidad > 1)

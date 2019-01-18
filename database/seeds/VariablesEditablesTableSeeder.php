@@ -16,12 +16,12 @@ class VariablesEditablesTableSeeder extends Seeder
 
         $variableEditable = new VariableEditable;
         $variableEditable->nombre = "TRM";
-        $variableEditable->valor = 2.980;
+        $variableEditable->valor = 3250;
         $variableEditable->save();
 
         $variableEditable = new VariableEditable;
         $variableEditable->nombre = "Valor Libra";
-        $variableEditable->valor = 4.850;
+        $variableEditable->valor = 2.90;
         $variableEditable->save();
 
         $variableEditable = new VariableEditable;
@@ -36,12 +36,12 @@ class VariablesEditablesTableSeeder extends Seeder
 
         $variableEditable = new VariableEditable;
         $variableEditable->nombre = "Cinta";
-        $variableEditable->valor = 1.380;
+        $variableEditable->valor = 8;
         $variableEditable->save();
 
         $variableEditable = new VariableEditable;
         $variableEditable->nombre = "Costo3";
-        $variableEditable->valor = 2.980;
+        $variableEditable->valor = 10;
         $variableEditable->save();
     }
 }

@@ -25,5 +25,9 @@ class RolesTableSeeder extends Seeder
         $rol = new Rol;
         $rol->nombre = "Cliente";
         $rol->save();
+
+        $rol = new Rol;
+        $rol->nombre = "Cliente Vip";
+        $rol->save();
     }
 }

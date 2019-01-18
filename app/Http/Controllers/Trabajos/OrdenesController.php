@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Trabajos;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Events\NotificationEvent;
+use App\Events\OrdenCreada;
 use App\Sede;
 use App\Orden;
 use App\User;
@@ -47,20 +48,32 @@ class OrdenesController extends Controller
     {
         $user = auth()->user()->id;
         //dd($user);
-        $ordenAsignadas = Orden::select('ordens.id','ordens.estado_id','ordens.created_at','historial_ordens.userAsignado_id')
+        $ordenAsignadas = Orden::select('ordens.id','ordens.user_id','ordens.estado_id','ordens.created_at','historial_ordens.userAsignado_id','users.name')
         ->join('historial_ordens','historial_ordens.orden_id','=','ordens.id')
+        ->join('users','ordens.user_id','=','users.id')
         ->where('historial_ordens.userAsignado_id','=',$user)->first()
-        ->whereIn('ordens.estado_id',[3,6,12])
+        ->whereIn('ordens.estado_id',[3,6,9,12])
         ->get();
         //dd($ordenAsignadas);
 
-        return view('trabajos.ordenes.asignadas_a_mi', compact('ordenAsignadas'));
+        if($ordenAsignadas == 'null')
+        {   
+            dd('Viene nula la consulta');
+            return view('trabajos.ordenes.asignadas_a_mi');
+        }
+        else {
+            //dd('La consulta trae valores');
+           return view('trabajos.ordenes.asignadas_a_mi', compact('ordenAsignadas')); 
+        }
     }
 
     //Detalle de la Orden de usuario en estado Precotizado o Cotizado ..................................
     public function detalleUsuario($orden_id)
     {
-        $detalleOrden = itemOrden::select('ordens.id','ordens.estado_id','sedes.nombre','item_ordens.estadoItem_id','item_ordens.sede_id','item_ordens.id','marca','referencia','descripcion','cantidad','comentarios','pesoLb','costoUnitario','margenUsa')
+        $useRol = auth()->user()->rol_id;
+
+        //dd($useRol);
+        $detalleOrden = itemOrden::select('ordens.id','ordens.estado_id','ordens.Trm','ordens.convencion_id','sedes.nombre','item_ordens.estadoItem_id','item_ordens.sede_id','item_ordens.id','marca','referencia','descripcion','cantidad','comentarios','pesoLb','costoUnitario','margenUsa')
         ->join('ordens','item_ordens.orden_id','=','ordens.id')
         ->join('sedes','item_ordens.sede_id','=','sedes.id')
         ->where('ordens.id','=',$orden_id)
@@ -79,8 +92,7 @@ class OrdenesController extends Controller
                 DB::raw('count(cantidad) as cantidadSede'))
         ->groupBy('sedes.id')
         ->get();
-
-        return view('trabajos.ordenes.detalleUsuario', compact('detalleOrden','variables','detallePeso'))->with('orden_id',$orden_id);
+        return view('trabajos.ordenes.detalleUsuario', compact('detalleOrden','variables','detallePeso','useRol'))->with('orden_id',$orden_id);
     }
 
     //Crear Retornar el formualrio para crear nuevas ordenes ....................................
@@ -135,7 +147,11 @@ class OrdenesController extends Controller
 	    	$item->save();
     	}
 
+        $user = User::all();
+        $orden = $orden->id;
 
+        //Activamos el evento para el envio del Correo
+        OrdenCreada::dispatch($user, $orden);
 
     	//retornamos a la vista
     	return back()->with('flash','La orden ha sido creada');
@@ -147,7 +163,7 @@ class OrdenesController extends Controller
         $sinUsuario = Orden::select('ordens.id','ordens.estado_id','ordens.created_at','estado_ordens.nombreEstado','users.name')
         ->join('estado_ordens','ordens.estado_id','=','estado_ordens.id')
         ->join('users','ordens.user_id','=','users.id')
-        ->whereIn('ordens.estado_id',[8,2])
+        ->whereIn('ordens.estado_id',[4,8,2])
         //->where('ordens.estado_id','=',8)
         //->orwhere('ordens.estado_id','=',2)
         ->get();
@@ -155,7 +171,7 @@ class OrdenesController extends Controller
         return view('trabajos.ordenes.sinAsignar', compact('sinUsuario'));
     }
 
-
+/*
     public function cotizadas()
     {
         //$sinUsuario = Orden::where('ordens.estado_id','=',1)->get();
@@ -169,7 +185,7 @@ class OrdenesController extends Controller
         //dd($sinUsuario);
         return view('trabajos.ordenes.sinAsignar', compact('sinUsuario'));
     }
-
+*/
     //Detalle de las ordenes en estado PreCotizada sin Asignar ...........................................
     public function detalleCotizadas($orden_id)
     {
@@ -177,11 +193,12 @@ class OrdenesController extends Controller
         ->join('ordens','item_ordens.orden_id','=','ordens.id')
         ->join('sedes','item_ordens.sede_id','=','sedes.id')
         ->join('historial_ordens','historial_ordens.orden_id','ordens.id')
-        ->where('ordens.id','=',$orden_id)
+        ->where('ordens.id','=',$orden_id)->first()
         ->get();
 
         //dd($detalleOrden[0]->orden_id);
         $user = User::all();
+        //dd($detalleOrden);
         return view('trabajos.ordenes.detalleCotizadas', compact('detalleOrden','user'));
     }
 
@@ -239,7 +256,7 @@ class OrdenesController extends Controller
         $ordenAsignadas = Orden::select('ordens.id','ordens.estado_id','ordens.created_at','estado_ordens.nombreEstado','users.name')
             ->join('estado_ordens','ordens.estado_id','=','estado_ordens.id')
             ->join('users','ordens.user_id','=','users.id')
-            ->whereIn('ordens.estado_id',[3,9])
+            ->whereIn('ordens.estado_id',[3,6,9])
             ->get();
         //dd($ordenAsignadas);
         return view('trabajos.ordenes.asignadas', compact('ordenAsignadas'));
@@ -250,7 +267,7 @@ class OrdenesController extends Controller
     {
 
         //Seleccionamos los items correspondientes al id que traemos como parametro.
-        $detalleOrden = itemOrden::select('ordens.id','sedes.nombre','item_ordens.estadoItem_id','item_ordens.sede_id','item_ordens.id','marca','referencia','descripcion','cantidad','comentarios','pesoLb','costoUnitario','margenUsa')
+        $detalleOrden = itemOrden::select('ordens.id','ordens.Trm','sedes.nombre','item_ordens.estadoItem_id','item_ordens.sede_id','item_ordens.id','marca','referencia','descripcion','cantidad','comentarios','pesoLb','pesoPromedio','costoUnitario','margenUsa')
         ->join('ordens','item_ordens.orden_id','=','ordens.id')
         ->join('sedes','item_ordens.sede_id','=','sedes.id')
         ->where('ordens.id','=',$orden_id)
@@ -282,6 +299,7 @@ class OrdenesController extends Controller
         //Recorremos si hay algun item dividido *********************************
         foreach ($request['detalle_id'] as $key => $value)
         {
+            //dd($request);
 
             //Validamos cual item de la orden esta dividido
             if(isset($request['itemDividido'.$value]))
@@ -310,6 +328,7 @@ class OrdenesController extends Controller
                     $item->descripcion = $request['descripcion'][$key];
                     $item->cantidad = $cantidadItem;
                     $item->pesoLb = $request['pesoLb'][$key];
+                    $item->pesoPromedio = $request['pesoPromedio'][$key];
                     $item->comentarios = $request['comentarios'][$key];
                     $item->costoUnitario = $request['costoUnitario'][$key];
                     $item->margenUsa = $request['margenUsa'][$key];
@@ -334,6 +353,15 @@ class OrdenesController extends Controller
             }else
             {
                 unset($arr['pesoLb']);
+            }
+
+            if($value!=null)
+            {
+                $arr['pesoPromedio'] = $value;
+
+            }else
+            {
+                unset($arr['pesoPromedio']);
             }
 
             if($value!=null)
@@ -388,10 +416,29 @@ class OrdenesController extends Controller
             $historialOrden->save();
 
             //Activamos el evento para el envio del Correo
-            //NotificationEvent::dispatch(User::where('id',$orden->user_id)->first(),[$orden],"CambioEstadoCotizado");
+            NotificationEvent::dispatch(User::where('id',$orden->user_id)->first(),[$orden],"CambioEstadoCotizado");
 
             //Retornamos a la vista anterior
-            return back()->with('flash','La orden ha sido actualizada');
+            //dd('Lego Aqui');
+
+            $user = auth()->user()->id;
+
+            $ordenAsignadas = Orden::select('ordens.id','ordens.estado_id','ordens.created_at','historial_ordens.userAsignado_id')
+            ->join('historial_ordens','historial_ordens.orden_id','=','ordens.id')
+            ->where('historial_ordens.userAsignado_id','=',$user)->first()
+            ->whereIn('ordens.estado_id',[3,6,12])
+            ->get();
+            //dd($ordenAsignadas);
+
+            if($ordenAsignadas == '')
+            {   
+                dd('Viene nula la consulta');
+                return view('trabajos.ordenes.asignadas_a_mi');
+            }
+            else {
+                //dd('La consulta trae valores');
+               return view('trabajos.ordenes.asignadas_a_mi', compact('ordenAsignadas')); 
+            }
         }
 
         //Validamos si el estado es 4 Cotizado y lo cambiamos a estado 8 Orden Sin Asignar
@@ -405,24 +452,36 @@ class OrdenesController extends Controller
             $historialOrden->estadoActual_id = 8;
             $historialOrden->userAsignado_id = auth()->user()->id;
             $historialOrden->save();
-        }
+
+            $user = auth()->user()->id;
+            $ordenes = Orden::select('ordens.id','Trm','ordens.estado_id','ordens.created_at','estado_ordens.nombreEstado','users.name','convencions.nombreConvencion')
+            ->join('estado_ordens','ordens.estado_id','=','estado_ordens.id')
+            ->join('users','ordens.user_id','=','users.id')
+            ->join('convencions','ordens.convencion_id','=','convencions.id')
+            ->where('user_id','=',$user)
+            ->get();
+            //dd($ordenes);
+            return view('trabajos.ordenes.misOrdenes', compact('ordenes'));
+            }
     }
 
-    public function editar()
+    //Vista con el formulario para editar la orden ..................................................
+    public function editar($orden_id)
     {
         $detalleOrden = itemOrden::select('ordens.id','sedes.nombre','item_ordens.estadoItem_id','item_ordens.sede_id','item_ordens.id','marca','referencia','descripcion','cantidad','comentarios','pesoLb','costoUnitario','margenUsa')
         ->join('ordens','item_ordens.orden_id','=','ordens.id')
         ->join('sedes','item_ordens.sede_id','=','sedes.id')
-        ->where('ordens.id','=',2)
+        ->where('ordens.id','=',$orden_id)
         //->where('item_ordens.estadoItem_id','=',1)
         ->get();
         //dd($detalleOrden);
         $variables = VariableEditable::all();
         //dd($detalleOrden);
-        $orden_id = 2;
+        $orden_id = $orden_id;
         return view('trabajos.ordenes.editarOrden', compact('detalleOrden','variables'))->with('orden_id',$orden_id);
     }  
 
+    //Actualizar o editar la orden por parte del cliente .............................................
     public function actualizarEdicion(Request $request)
     {
         //dd($request);
@@ -460,4 +519,191 @@ class OrdenesController extends Controller
         return back()->with('flash','La orden ha sido actualizada');   
     } 
 
+    public function detalleAsignadasOrden($orden_id)
+    {   
+        $detalleOrden = itemOrden::select('ordens.id','ordens.Trm','ordens.convencion_id','sedes.nombre','item_ordens.estadoItem_id','item_ordens.sede_id','item_ordens.id','marca','referencia','descripcion','cantidad','comentarios','pesoLb','costoUnitario','margenUsa','diasEntregaProveedor','bodega','guiaInternacional','invoice','fechaInvoice','diasPrometidosCliente','guiaInternaDestino','facturaCop','fechaRealEntrega','fechaFactura')
+        ->join('ordens','item_ordens.orden_id','=','ordens.id')
+        ->join('sedes','item_ordens.sede_id','=','sedes.id')
+        ->where('ordens.id','=',$orden_id)
+        ->whereIn('item_ordens.estadoItem_id',[1,4])
+        ->get();
+
+        $variables = VariableEditable::all();
+
+        $detallePeso = DB::table('item_ordens')
+        ->join('ordens','item_ordens.orden_id','ordens.id')
+        ->join('sedes','item_ordens.sede_id','sedes.id')
+        ->where('ordens.id','=',$orden_id)
+        ->select('ordens.id','sede_id','sedes.nombre',
+                DB::raw('sum(pesoLb * cantidad) as PesoSede'),
+                DB::raw('sum(cantidad) as cantidadProductos'),
+                DB::raw('count(cantidad) as cantidadSede'))
+        ->groupBy('sedes.id')
+        ->get();
+
+        return view('trabajos.ordenes.detalleAsignadaOrden', compact('detalleOrden','variables','detallePeso'))->with('orden_id',$orden_id);
+    }
+
+    public function actualizarOrden(Request $request)
+    {   
+        //dd($request);
+        $arr=['diasEntregaProveedor' =>'','bodega' =>'','guiaInternacional' =>'','invoice' =>'','fechaInvoice' =>'','diasPrometidosCliente' =>'','guiaInternaDestino' =>'','facturaCop' =>'','fechaRealEntrega' =>'','fechaFactura' =>''];
+        foreach ($request['diasEntregaProveedor'] as $key => $value)
+        {
+            $detalle_id = $request['detalle_id'][$key];
+
+            if($value!=null)
+            {
+                $arr['diasEntregaProveedor'] = $value;
+
+            }else
+            {
+                unset($arr['diasEntregaProveedor']);
+            }
+
+            if($value!=null)
+            {
+                //dd($request['bodega'][$key]);
+                 $arr['bodega'] = $request['bodega'][$key];
+            }else
+            {
+                unset($arr['bodega']);
+            }
+
+            if($value!=null)
+            {
+                 $arr['guiaInternacional'] = $request['guiaInternacional'][$key];
+            }else
+            {
+                unset($arr['guiaInternacional']);
+            }
+
+            if($value!=null)
+            {
+                 $arr['invoice'] = $request['invoice'][$key];
+            }else
+            {
+                unset($arr['invoice']);
+            }
+
+            if($value!=null)
+            {
+                 $arr['fechaInvoice'] = $request['fechaInvoice'][$key];
+            }else
+            {
+                unset($arr['fechaInvoice']);
+            }
+
+            if($value!=null)
+            {
+                 $arr['diasPrometidosCliente'] = $request['diasPrometidosCliente'][$key];
+            }else
+            {
+                unset($arr['diasPrometidosCliente']);
+            }
+
+            if($value!=null)
+            {
+                 $arr['guiaInternaDestino'] = $request['guiaInternaDestino'][$key];
+            }else
+            {
+                unset($arr['guiaInternaDestino']);
+            }
+
+            if($value!=null)
+            {
+                 $arr['facturaCop'] = $request['facturaCop'][$key];
+            }else
+            {
+                unset($arr['facturaCop']);
+            }
+
+            if($value!=null)
+            {
+                 $arr['fechaRealEntrega'] = $request['fechaRealEntrega'][$key];
+            }else
+            {
+                unset($arr['fechaRealEntrega']);
+            }
+
+            if($value!=null)
+            {
+                 $arr['fechaFactura'] = $request['fechaFactura'][$key];
+            }else
+            {
+                unset($arr['fechaFactura']);
+            }
+
+            if(count($arr)>0)
+            {
+                //dd($arr);
+                DB::table('item_ordens')
+                ->where('id', $detalle_id)
+                ->update($arr);
+                $arr=['diasEntregaProveedor' =>'','bodega' =>'','guiaInternacional' =>'','invoice' =>'','fechaInvoice' =>'','diasPrometidosCliente' =>'','guiaInternaDestino' =>'','facturaCop' =>'','fechaRealEntrega' =>'','fechaFactura' =>''];
+            }
+        }
+
+        $item = ItemOrden::where('id',$request->detalleId)->first();
+        $item->estadoItem_id = 4;
+        $item->update();
+
+        //dd($item);
+
+        $orden_id = (int)$request->ordenId;
+        
+        $detalleOrden = itemOrden::select('ordens.id','ordens.Trm','ordens.convencion_id','sedes.nombre','item_ordens.estadoItem_id','item_ordens.sede_id','item_ordens.id','marca','referencia','descripcion','cantidad','comentarios','pesoLb','costoUnitario','margenUsa','diasEntregaProveedor','bodega','guiaInternacional','invoice','fechaInvoice','diasPrometidosCliente','guiaInternaDestino','facturaCop','fechaRealEntrega','fechaFactura')
+        ->join('ordens','item_ordens.orden_id','=','ordens.id')
+        ->join('sedes','item_ordens.sede_id','=','sedes.id')
+        ->where('ordens.id','=',$orden_id)
+        ->whereIn('item_ordens.estadoItem_id',[1,4])
+        ->get();
+
+        $variables = VariableEditable::all();
+
+        $detallePeso = DB::table('item_ordens')
+        ->join('ordens','item_ordens.orden_id','ordens.id')
+        ->join('sedes','item_ordens.sede_id','sedes.id')
+        ->where('ordens.id','=',$orden_id)
+        ->select('ordens.id','sede_id','sedes.nombre',
+                DB::raw('sum(pesoLb * cantidad) as PesoSede'),
+                DB::raw('sum(cantidad) as cantidadProductos'),
+                DB::raw('count(cantidad) as cantidadSede'))
+        ->groupBy('sedes.id')
+        ->get();
+        //dd('LLego aqui');
+        return view('trabajos.ordenes.detalleAsignadaOrden', compact('detalleOrden','variables','detallePeso'))->with('orden_id',$orden_id);
+    }
+
+    public function actualizarItem(Request $request)
+    {
+        //dd((int)$detalle_id);
+        $item = ItemOrden::where('id',$request->detalleId)->first();
+        $item->estadoItem_id = 4;
+        $item->update();
+
+        dd($item);
+
+        $detalleOrden = itemOrden::select('ordens.id','ordens.Trm','ordens.convencion_id','sedes.nombre','item_ordens.estadoItem_id','item_ordens.sede_id','item_ordens.id','marca','referencia','descripcion','cantidad','comentarios','pesoLb','costoUnitario','margenUsa','diasEntregaProveedor','bodega','guiaInternacional','invoice','fechaInvoice','diasPrometidosCliente','guiaInternaDestino','facturaCop','fechaRealEntrega','fechaFactura')
+        ->join('ordens','item_ordens.orden_id','=','ordens.id')
+        ->join('sedes','item_ordens.sede_id','=','sedes.id')
+        ->where('ordens.id','=',$orden_id)
+        ->where('item_ordens.estadoItem_id','=',1)
+        ->get();
+
+        $variables = VariableEditable::all();
+
+        $detallePeso = DB::table('item_ordens')
+        ->join('ordens','item_ordens.orden_id','ordens.id')
+        ->join('sedes','item_ordens.sede_id','sedes.id')
+        ->where('ordens.id','=',$orden_id)
+        ->select('ordens.id','sede_id','sedes.nombre',
+                DB::raw('sum(pesoLb * cantidad) as PesoSede'),
+                DB::raw('sum(cantidad) as cantidadProductos'),
+                DB::raw('count(cantidad) as cantidadSede'))
+        ->groupBy('sedes.id')
+        ->get();
+        //dd('LLego aqui');
+        return view('trabajos.ordenes.detalleAsignadaOrden', compact('detalleOrden','variables','detallePeso'))->with('orden_id',$orden_id);
+    }
 }

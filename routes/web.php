@@ -11,6 +11,10 @@
 |
 */
 
+/*Route::get('email', function(){
+    return new App\Mail\DatosOrdenCreada(App\User::first(), '1');
+});*/
+
 Route::auth();
 Route::get('/', function () {
     return redirect()->route('login');
@@ -32,7 +36,7 @@ Route::group(['prefix'=>'admin','namespace'=>'Admin','middleware'=>'auth'], func
 Route::group(['prefix'=>'trabajos','namespace'=>'Trabajos','middleware'=>'auth'], function(){
 
     //Rutas de las ordenes
-    Route::get('ordenes/editar','OrdenesController@editar')->name('ordenes.editar');
+    Route::get('ordenes/editar/{orden_id}','OrdenesController@editar')->name('ordenes.editar');
     Route::post('ordenes/Actualizar','OrdenesController@actualizarEdicion')->name('ordenes.actualizarEdicion');
     //Consulta de todas las ordenes
     Route::get('ordenes/index','OrdenesController@index')->name('ordenes.index');
@@ -49,7 +53,11 @@ Route::group(['prefix'=>'trabajos','namespace'=>'Trabajos','middleware'=>'auth']
     Route::post('asignarUsuarioOrden/', 'OrdenesController@asignarUsuarioOrden')->name('ordenes.asignarUsuarioOrden');
     Route::get('ordenes/asignadas', 'OrdenesController@asignadas')->name('ordenes.asignadas');
     Route::get('detalleAsignada/{orden_id}', 'OrdenesController@detalleAsignada')->name('detalle.asignadas');
+    Route::get('detalleAsignada/OrdenAsignada/{orden_id}', 'OrdenesController@detalleAsignadasOrden')->name('detalle.asignadasOrden');
     Route::post('ordenes/actualizar','OrdenesController@update')->name('ordenes.update');
+    //Se actualizan los datos de la Orden como fecha entrega y feche recepcion.
+    Route::post('ordenes/ordenes.actualizarOrden','OrdenesController@actualizarOrden')->name('ordenes.actualizarOrden');
+
 
     Route::post('ordenes/cotizarOrden/{orden_id}','OrdenesController@cotizarOrden')->name('ordenes.cotizarOrden');
 
@@ -62,6 +70,9 @@ Route::group(['prefix'=>'trabajos','namespace'=>'Trabajos','middleware'=>'auth']
     //Variables Editables -----------------------------------------------------------
     Route::get('variables', 'VariableController@index')->name('variables.index');
     Route::post('variables/{variable_id}', 'VariableController@update')->name('trabajos.variables.update');
+
+    //Vista Facturación
+    Route::get('facturas/orden', 'FacturasController@facturasOrden')->name('facturas.orden');
 
 });
 

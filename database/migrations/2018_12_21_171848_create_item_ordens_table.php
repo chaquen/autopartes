@@ -27,19 +27,21 @@ class CreateItemOrdensTable extends Migration
             $table->string('comentarios')->nullable();
 
             $table->decimal('pesoLb')->nullable();
+            $table->decimal('pesoPromedio')->nullable();
             $table->decimal('costoUnitario')->nullable();
+            $table->decimal('valorPropuesto')->nullable();
             $table->decimal('margenUsa')->nullable();
 
-            $table->string('diasEntregaProv')->nullable();
+            $table->string('diasEntregaProveedor')->nullable();
             $table->string('bodega')->nullable();
             $table->string('guiaInternacional')->nullable();
             $table->string('invoice')->nullable();
-            $table->string('fechaInvoice')->nullable();
-            $table->string('diasPrometidos')->nullable();
-            $table->string('guiaInterna')->nullable();
+            $table->date('fechaInvoice')->nullable();
+            $table->string('diasPrometidosCliente')->nullable();
+            $table->string('guiaInternaDestino')->nullable();
             $table->string('facturaCop')->nullable();
-            $table->string('fechaRealEntrega')->nullable();
-            $table->string('fechaFactura')->nullable();
+            $table->date('fechaRealEntrega')->nullable();
+            $table->date('fechaFactura')->nullable();
             $table->string('porcentajeArancel')->nullable();
             $table->string('margenCop')->nullable();
             $table->string('TE')->nullable();

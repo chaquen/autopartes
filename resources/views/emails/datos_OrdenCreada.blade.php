@@ -1,8 +1,7 @@
 @component('mail::message')
-{{ config('app.name') }}
-# Tu roden N° 
+# La Orden {{ $orden }} ha sido creada
 
-Para ver más información de la orden, pulsa el siguiente boton.
+Para ver los detalles de la orden, pulsa el siguiente boton.
 
 @component('mail::button', ['url' => url('login')])
 Ir a T&G
