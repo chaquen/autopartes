@@ -1,5 +1,5 @@
 @component('mail::message')
-# La Orden {{----}} esta lista para facturar.
+# La Orden N° {{$orden}}  esta lista para facturar.
 
 Para ver los detalles de la factura, pulsa el siguiente boton.
 

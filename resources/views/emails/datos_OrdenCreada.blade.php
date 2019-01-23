@@ -1,5 +1,5 @@
 @component('mail::message')
-# La Orden {{ $orden }} ha sido creada
+# La Orden N° {{$orden}}  ha sido creada
 
 Para ver los detalles de la orden, pulsa el siguiente boton.
 

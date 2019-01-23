@@ -45,7 +45,7 @@ class NotificationMail extends Mailable
             case 'CambioEstadoCotizado':
                 //dd($this);
                 return $this->markdown('emails.CambioEstadoCliente')
-                            ->subject('Se ha cambiado el estado de tu orden '. config('app.name'));
+                            ->subject('La orden  N° '.$this->obj[0].' ha sido gestionada '.config('app.name'));
                 # code...
                 break;
             default:

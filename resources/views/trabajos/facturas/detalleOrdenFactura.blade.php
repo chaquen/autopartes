@@ -280,6 +280,13 @@
 		        				</td>
 		        				<td>
 		        					@php
+		        						if($detalleOrden[0]->precioTotalGlobal == 0)
+                                        {
+                                            $detalleOrden[0]->precioTotalGlobal = 1;
+                                        }else{
+                                            $detalleOrden[0]->precioTotalGlobal = $detalleOrden[0]->precioTotalGlobal;
+                                        }
+                                        
 		        						$empaque = ($precioTotal / $detalleOrden[0]->precioTotalGlobal) * $variables[3]->valor;
 		        						$empaque = $empaque / $detalle->cantidad;
 		        						$empaqueCal = $empaque;

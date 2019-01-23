@@ -15,7 +15,7 @@ class OrdenAsignada
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $user;
-    public  $ordenAsignada;
+    public  $orden;
     /**
      * Create a new event instance.
      *

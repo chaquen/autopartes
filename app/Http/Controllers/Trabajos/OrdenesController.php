@@ -50,24 +50,51 @@ class OrdenesController extends Controller
     public function misAsignadas()
     {
         $user = auth()->user()->id;
-        //dd($user);
-        $ordenAsignadas = Orden::select('ordens.id','ordens.user_id','ordens.estado_id','ordens.created_at','historial_ordens.userAsignado_id','users.name')
-        ->join('historial_ordens','historial_ordens.orden_id','=','ordens.id')
-        ->join('users','ordens.user_id','=','users.id')
-        ->where('historial_ordens.userAsignado_id','=',$user)->first()
-        ->whereIn('ordens.estado_id',[3,6,9,12])
-        ->get();
+        
+        if(count(DB::table('historial_ordens')->join('ordens','historial_ordens.orden_id','=','ordens.id')->where('userAsignado_id',$user)->whereIn('ordens.estado_id',[3,6,9,12])->get())>0){
+
+
+            $ordenAsignadas = Orden::select('users.name',
+                                            'ordens.id',
+                                            'ordens.user_id',
+                                            'ordens.estado_id',
+                                            'ordens.created_at',
+                                            'historial_ordens.userAsignado_id')
+                ->join('historial_ordens','historial_ordens.orden_id','=','ordens.id')
+                ->join('users','ordens.user_id','=','users.id')
+                ->where('historial_ordens.userAsignado_id','=',$user)
+                ->whereIn('ordens.estado_id',[3,6,9,12])
+                ->first()
+                ->get();
+                /*dd(Orden::select('users.name',
+                                            'ordens.id',
+                                            'ordens.user_id',
+                                            'ordens.estado_id',
+                                            'ordens.created_at',
+                                            'historial_ordens.userAsignado_id')
+                ->join('historial_ordens','historial_ordens.orden_id','=','ordens.id')
+                ->join('users','ordens.user_id','=','users.id')
+                ->where('historial_ordens.userAsignado_id','=',$user)
+                ->whereIn('ordens.estado_id',[3,6,9,12])
+                ->first()
+                ->get());*/
+                return view('trabajos.ordenes.asignadas_a_mi', compact('ordenAsignadas')); 
+        }else{
+            $ordenAsignadas=[];
+            return view('trabajos.ordenes.asignadas_a_mi',compact('ordenAsignadas'));
+        }
+        
         //dd($ordenAsignadas);
 
-        if($ordenAsignadas == 'null')
+        /*if($ordenAsignadas == null)
         {   
-            dd('Viene nula la consulta');
+            //dd('Viene nula la consulta');
             return view('trabajos.ordenes.asignadas_a_mi');
         }
         else {
             //dd('La consulta trae valores');
            return view('trabajos.ordenes.asignadas_a_mi', compact('ordenAsignadas')); 
-        }
+        }*/
     }
 
     //Detalle de la Orden de usuario en estado Precotizado o Cotizado ..................................
@@ -255,7 +282,7 @@ class OrdenesController extends Controller
         ->where('users.id','=',$request->usuarioAsignado)
         ->get();
         $ordenAsignada = (int)$request->ordenId;
-        //dd($user);
+        //dd($ordenAsignada);
         OrdenAsignada::dispatch($user, $ordenAsignada);
 
         //dd($UserGestiona);
@@ -430,7 +457,7 @@ class OrdenesController extends Controller
             $historialOrden->save();
 
             //Activamos el evento para el envio del Correo
-            NotificationEvent::dispatch(User::where('id',$orden->user_id)->first(),[$orden],"CambioEstadoCotizado");
+            NotificationEvent::dispatch(User::where('id',$orden->user_id)->first(),[$orden_id],"CambioEstadoCotizado");
 
             //Retornamos a la vista anterior
             //dd('Lego Aqui');
@@ -474,9 +501,11 @@ class OrdenesController extends Controller
             ->get();
             //dd($user);
 
-            OrdenAceptada::dispatch($user,$orden);
+            OrdenAceptada::dispatch($user,$orden_id);
             return view('trabajos.ordenes.misOrdenes', compact('ordenes'))->with('flash','La orden fue aceptada');
-            }
+        }else{
+                //dd('que paso');
+        }
     }
 
     //Vista con el formulario para editar la orden ..................................................
@@ -801,10 +830,10 @@ class OrdenesController extends Controller
         $orden = $request->orden_id;
         OrdenParaFacturar::dispatch($user,$orden);
 
-        if($ordenAsignadas == 'null')
+        if($ordenAsignadas == null)
         {   
-            dd('Viene nula la consulta');
-            return view('trabajos.ordenes.asignadas_a_mi');
+            //dd('Viene nula la consulta');
+            return view('trabajos.ordenes.asignadas_a_mi',compact('ordenAsignadas'));
         }
         else {
             //dd('La consulta trae valores');

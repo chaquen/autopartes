@@ -20,7 +20,7 @@ class EnviarDatosOrdenAsignada
     public function handle(OrdenAsignada $event)
     {
         Mail::to($event->user)->queue(
-            new DatosOrdenAsignada($event->user, $event->ordenAsignada)
+            new DatosOrdenAsignada($event->user, $event->orden)
         );
     }
 }

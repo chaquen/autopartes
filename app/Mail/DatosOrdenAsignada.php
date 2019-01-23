@@ -12,16 +12,17 @@ class DatosOrdenAsignada extends Mailable
     use Queueable, SerializesModels;
 
     public $user;
-    public  $ordenAsignada;
+    public  $orden;
     /**
      * Create a new message instance.
      *
      * @return void
      */
     public function __construct($user, $ordenAsignada)
-    {
+    {   
         $this->user = $user;
         $this->orden =  $ordenAsignada;
+        //dd($ordenAsignada);
     }
 
     /**

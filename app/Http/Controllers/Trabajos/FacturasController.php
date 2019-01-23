@@ -19,8 +19,8 @@ class FacturasController extends Controller
     	$ordenes = Orden::where('ordens.estado_id','=',13)
     	->get();
 
-    	//dd($orden);
-    	return view('trabajos.facturas.OrdenIndex', compact('ordenes'));
+    	//dd($ordenes);
+    	return view('trabajos.facturas.ordenIndex', compact('ordenes'));
     }
 
     public function crearFacturaOrden($orden_id)
@@ -187,7 +187,7 @@ class FacturasController extends Controller
         //dd($user);
         FacturaCreada::dispatch($user, $orden);
         //dd($orden);
-        return view('trabajos.facturas.OrdenIndex', compact('ordenes'));
+        return view('trabajos.facturas.ordenIndex', compact('ordenes'));
     }
 
     public function index()

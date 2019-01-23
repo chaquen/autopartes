@@ -1,5 +1,5 @@
 @component('mail::message')
-# La Orden  ha sido Aceptada por el cliente
+# La Orden N° {{$orden}}  ha sido Aceptada por el cliente
 
 Para ver los detalles de la orden, pulsa el siguiente boton.
 

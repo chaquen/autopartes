@@ -1,5 +1,5 @@
 @component('mail::message')
-# La Orden {{ $ordenAsignada }}, te ha sido asignada.
+# La Orden N° {{$orden}} , te ha sido asignada.
 
 Para ver los detalles de la orden, pulsa el siguiente boton.
 

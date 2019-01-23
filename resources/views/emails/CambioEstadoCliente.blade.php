@@ -1,6 +1,6 @@
 @component('mail::message')
 {{ config('app.name') }}
-# Tu roden N° 
+# Tu oden N° {{$obj[0]}}
 
 Para ver más información de la orden, pulsa el siguiente boton.
 

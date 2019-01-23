@@ -25,6 +25,7 @@ class OrdenAceptada
     {
         $this->user = $user;
         $this->orden = $orden;
+        //  dd($this);
     }
 
     /**
