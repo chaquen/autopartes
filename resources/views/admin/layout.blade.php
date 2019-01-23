@@ -62,9 +62,10 @@ desired effect
     <!-- Logo -->
     <a href="index2.html" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini">{{ config('app.name') }}</span>
+      <!--<span class="logo-mini">{{-- config('app.name') --}}</span>-->
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg">{{ config('app.name') }}</span>
+      <!--<span class="logo-lg">{{-- config('app.name') --}}</span>-->
+      <img src="{{ asset('img/logo.png') }}">
     </a>
 
     <!-- Header Navbar -->
@@ -81,14 +82,14 @@ desired effect
             <!-- Menu Toggle Button -->
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <!-- The user image in the navbar-->
-              <img src="{{asset('adminLte/img/user2-160x160.jpg')}}" class="user-image" alt="User Image">
+              <img src="{{asset('img/imgUsu.png')}}" class="user-image" alt="User Image">
               <!-- hidden-xs hides the username on small devices so only the image appears. -->
               <span class="hidden-xs">{{ auth()->user()->name }}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- The user image in the menu -->
               <li class="user-header">
-                <img src="{{asset('adminLte/img/user2-160x160.jpg')}}" class="img-circle" alt="User Image">
+                <img src="{{asset('img/imgUsu.png')}}" class="img-circle" alt="User Image">
 
                 <p>
                   {{ auth()->user()->name }}
@@ -124,7 +125,7 @@ desired effect
       <!-- Datos del Usuario Logueado ....................................................-->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="{{asset('adminLte/img/user2-160x160.jpg')}}" class="img-circle" alt="User Image">
+          <img src="{{asset('img/imgUsu.png')}}" class="img-circle" alt="User Image" style="border-radius: 20px">
         </div>
         <div class="pull-left info">
           <p>{{ auth()->user()->name }}</p>
@@ -149,7 +150,8 @@ desired effect
           <ul class="treeview-menu">
             </li>
             @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2)
-            <li><a href="{{ route('ordenes.misAsignadas') }}"><i class="fa fa-pencil"></i>Mis Asignadas</a></li>
+            <li>
+              <a href="{{ route('ordenes.misAsignadas') }}"><i class="fa fa-pencil"></i>Mis Asignadas</a></li>
             @endif
             @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 3 || auth()->user()->rol_id == 4)
             <li><a href="{{ route('ordenes.misOrdenes') }}"><i class="fa fa-user"></i>Mis Ordenes</a>
@@ -183,10 +185,11 @@ desired effect
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="{{-- route('variables.index') --}}"><i class="fa fa-eye"></i>Mis Facturas</a></li>
+            <li><a href="{{ route('facturas.misFacturas') }}"><i class="fa fa-eye"></i>Mis Facturas</a></li>
             @if(auth()->user()->rol_id == 1)
+             <li></li>
+              <li><a href="{{ route('facturas.index') }}"><i class="fa fa-pencil"></i>Ver Facturas</a></li>
               <li><a href="{{ route('facturas.orden') }}"><i class="fa fa-pencil"></i>Crear Facturas por Orden</a></li>
-              <li><a href="{{-- route('facturas.item') --}}"><i class="fa fa-pencil"></i>Crear Facturas por Item</a></li>
             @endif
           </ul>
         </li>

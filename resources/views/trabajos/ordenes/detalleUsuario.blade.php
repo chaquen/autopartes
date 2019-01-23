@@ -27,7 +27,10 @@
 		        		<th>Total Peso Libra</th>
 		        		<th>Costo Flete Unidad</th>
 		        		<th>Costo Total Flete</th>
-		        		<th>Costo Parte Unidad</th>
+		        		<th>Costo Unidad</th>
+		        		@if(auth()->user()->rol_id == 4)
+		        			<th>Valor Sugerido</th>
+		        		@endif
 		        		<th>Precio Unitario USD</th>
 		        		<th>Precio Total USD</th>
 		        		
@@ -43,6 +46,13 @@
 		        <tbody id="detalle">
         			@php
         				$item = 0;
+        				$precioTotalGlobal = 0;
+        				$cantidadTotalGlobal = 0;
+        				$pesoTotalGlobal = 0;
+        				$costoTotalFleteGlobal = 0;
+
+        				$totalFleteUnidad = 0;
+        				$totalPrecioUnitario = 0;
         			@endphp
 		        	@foreach($detalleOrden as $detalle)
 		        		@php			        			
@@ -88,6 +98,9 @@
 		        				<input type="hidden" name="descripcion[]" value="{{ $detalle->descripcion }}">
 		        			</td>
 		        			<td>
+		        				@php
+		        					$cantidadTotalGlobal = $cantidadTotalGlobal + $detalle->cantidad;
+		        				@endphp
 		        				{{ $detalle->cantidad }}
 		       	 				<input type="hidden" id="cantidad{{ $detalle->id }}" name="cantidad[]" value="{{ $detalle->cantidad }}">
 		        			</td>
@@ -122,11 +135,13 @@
 		        							@php
 		        							$promedio = (float) 9 / (float) $detalleP->cantidadSede;
 		        							$pesoTotal = $promedio;
+		        							$pesoTotalGlobal = $pesoTotalGlobal + $pesoTotal;
 		        							@endphp
 		        							<label>{{ $pesoTotal }}</label>
 	        							@else
 	        								@php
-	        									$pesoTotal = $detalle->pesoLb * $detalle->cantidad;
+	        									$pesoTotal = $detalle->pesoLb * (int)$detalle->cantidad;
+	        									$pesoTotalGlobal = $pesoTotalGlobal + $pesoTotal;
         									@endphp
     										<label>{{ $pesoTotal }}</label>
         								@endif
@@ -145,10 +160,14 @@
 			        							$costoTotalFlete = $promedio * $variables[1]->valor;
 			        							$totalFlete = $costoTotalFlete * $detalle->cantidad;
 			        							if($detalle->convencion_id == 1)
-			        							{
+			        							{	
+			        								$costoTotalFleteGlobal = $costoTotalFleteGlobal + $totalFlete;
 			        								$precioMoneda = $totalFlete;
+
 			        							}else {
+			        								
 			        								$precioMoneda = $totalFlete * $detalle->Trm;
+			        								$costoTotalFleteGlobal = $costoTotalFleteGlobal + $precioMoneda;
 			        							}
 		        							@endphp
 		        							<label>{{ $precioMoneda }}</label>
@@ -157,10 +176,13 @@
 	        									$costoTotalFlete = $detalle->pesoLb * $variables[1]->valor;
 	        									$totalFlete = $costoTotalFlete * $detalle->cantidad;
 	        									if($detalle->convencion_id == 1)
-			        							{
+			        							{	
+			        								$costoTotalFleteGlobal = $costoTotalFleteGlobal + $totalFlete;
 			        								$precioMoneda = $totalFlete;
 			        							}else {
+			        								
 			        								$precioMoneda = $totalFlete * $detalle->Trm;
+			        								$costoTotalFleteGlobal = $costoTotalFleteGlobal + $precioMoneda;
 			        							}	
 	        								@endphp
 	        								<label id="costoTotalFlete{{$detalle->id}}">{{$precioMoneda}}</label>
@@ -177,7 +199,13 @@
 		        					$precioParteUnidad = $detalle->costoUnitario + $prom;
 		        				@endphp
 		        				<label>{{ $precioParteUnidad }}</label>
-		        			</td>		        				
+		        			</td>
+		        			@if(auth()->user()->rol_id == 4)
+		        				<td>
+			        				<input type="text" name="valorSugerido">
+			        			</td>
+		        			@endif
+		        				        				
 	        				<td class="bg-danger">
 
 	        					@foreach($detallePeso as $detalleP)
@@ -196,8 +224,12 @@
 					        					if($detalle->convencion_id == 1)
 			        							{
 			        								$precioMonedaUnidad = $precioUnidad;
+			        								$totalPrecioUnitario = $totalPrecioUnitario + $precioMonedaUnidad;
+			        								$totalPrecioUnitarioM = number_format($totalPrecioUnitario, 2, ",", ".");
 			        							}else {
 			        								$precioMonedaUnidad = $precioUnidad * $detalle->Trm;
+			        								$totalPrecioUnitario = $totalPrecioUnitario + $precioMonedaUnidad;
+			        								$totalPrecioUnitarioM = number_format($totalPrecioUnitario, 2, ",", ".");
 			        							}
 
 		        							@endphp
@@ -215,8 +247,12 @@
 					        					if($detalle->convencion_id == 1)
 			        							{
 			        								$precioMonedaUnidad = $precioUnidad;
+			        								$totalPrecioUnitario = $totalPrecioUnitario + $precioMonedaUnidad;
+			        								$totalPrecioUnitarioM = number_format($totalPrecioUnitario, 2, ",", ".");
 			        							}else {
 			        								$precioMonedaUnidad = $precioUnidad * $detalle->Trm;
+			        								$totalPrecioUnitario = $totalPrecioUnitario + $precioMonedaUnidad;
+			        								$totalPrecioUnitarioM = number_format($totalPrecioUnitario, 2, ",", ".");
 			        							}
 	        								@endphp
 	        								<label id="costoTotalFlete{{$detalle->id}}">{{$precioMonedaUnidad}}</label>
@@ -240,10 +276,16 @@
 					        					$precioTotal = $precioUnidad * $detalle->cantidad;
 
 					        					if($detalle->convencion_id == 1)
-			        							{
+			        							{	
+			        								$precioTotalGlobal = $precioTotalGlobal + $precioTotal;
+			        								
 			        								$precioMonedaTotal = $precioTotal;
+			        								$precioMonedaTotal = number_format($precioMonedaTotal, 2, ",", ".");
 			        							}else {
 			        								$precioMonedaTotal = $precioTotal * $detalle->Trm;
+			        								$precioTotalGlobal = $precioTotalGlobal + $precioMonedaTotal;
+			        								$precioMonedaTotal = number_format($precioMonedaTotal, 2, ",", ".");
+			        								
 			        							}
 
 		        							@endphp
@@ -260,9 +302,16 @@
 					        					$precioTotal = $precioUnidad * $detalle->cantidad;	
 					        					if($detalle->convencion_id == 1)
 			        							{
+			        								$precioTotalGlobal = $precioTotalGlobal + $precioTotal;
+			        								
 			        								$precioMonedaTotal = $precioTotal;
-			        							}else {
+			        								$precioMonedaTotal = number_format($precioMonedaTotal, 2, ",", ".");
+			        							}else 
+			        							{
 			        								$precioMonedaTotal = $precioTotal * $detalle->Trm;
+			        								
+			        								$precioTotalGlobal = $precioTotalGlobal + $precioMonedaTotal;
+			        								$precioMonedaTotal = number_format($precioMonedaTotal, 2, ",", ".");
 			        							}
 	        								@endphp
 	        								<label id="costoTotalFlete{{$detalle->id}}">{{$precioMonedaTotal}}</label>
@@ -274,7 +323,40 @@
 		        			<td><input type="hidden" name="detalle_id[]" value="{{$detalle->id}}"></td>
 		        		</tr>
 		        	@endforeach
-		        	
+		        	<tr>
+	        			<td><label class="text-danger">Totales</label></td>
+		        		<td></td>
+		        		<td></td>
+		        		<td></td>
+		        		<td></td>
+		        		<td></td>
+		        		<td><label class="text-primary">{{ $cantidadTotalGlobal }}</label></td>
+		        		<td></td>
+		        		<td></td>
+		        		<td><label class="text-primary">{{ $pesoTotalGlobal }}</label></td>
+		        		<td><label class="text-primary"></label></td>
+		        		<td></td>
+		        		<td>
+		        			@php
+		        				$totalCostoTotalFlete = $costoTotalFleteGlobal;
+		      					$totalCostoTotalFlete = number_format($totalCostoTotalFlete, 2, ",", ".");
+		      				@endphp
+		      				<label class="text-primary"> {{ $totalCostoTotalFlete }}</label>
+		        		</td>
+		        		<td></td>
+		        		@if(auth()->user()->rol_id == 4)
+		        			<td></td>
+		        		@endif
+		        		<td><label class="text-primary"> {{$totalPrecioUnitarioM}} </label></td>
+		        		
+		        		<td>
+		        			@php
+		        				$totalPrecioTotal = $precioTotalGlobal;
+		      					$totalPrecioTotal = number_format($totalPrecioTotal, 2, ",", ".");
+		      				@endphp
+		      				<label class="text-primary">{{ $totalPrecioTotal }}</label>
+		        		</td>
+	        		</tr>
 		        </tbody>
 		      	</table>
 	      <!--Seccion solo para el Administrador-->
@@ -292,16 +374,16 @@
 @stop
 
 @section('totalSede')
-	<div class="box box-warning col-md-6">
+	<div class="box col-md-6">
 	    <!-- /.box-header -->
-	    <div class="box-body table-responsive col-md-6 bg-warning">
+	    <div class="box-body table-responsive col-md-4 col-md-offset-4 bg-success">
 	    	<input type="hidden" name="ordenId" value="{{$orden_id}}">
 	    	<table class="table table-bordered table-striped table-hover">
 	    		<thead>
-    				<tr>
-    					<td>Sede</td>
-    					<td>Articulos por Sede</td>
-    					<td>Peso Lb por sede</td>
+    				<tr class="text-primary">
+    					<td><label>Sede</label></td>
+    					<td><label>Articulos por Sede</label></td>
+    					<td><label>Peso Lb por sede</label></td>
     				</tr>
 				</thead>
     			<tbody>
@@ -313,6 +395,31 @@
     					</tr>
     				@endforeach
     			</tbody>	
+      		</table>
+      		<table class="table table-bordered table-striped table-hover">
+      			<tr>
+      				<td><label class="text-primary">Cantidad total</label></td>
+      				<td><label class="text-primary">{{ $cantidadTotalGlobal }} Productos </label></td>
+      			</tr>
+      			<tr>
+      				<td><label class="text-primary">Peso total en libras</label></td>
+      				<td><label class="text-primary">{{ $pesoTotalGlobal }} Lbs </label></td>
+      			</tr>
+      			<tr>
+      				<td><label class="text-success">Costo total del Flete</label></td>
+      				<td><label class="text-success">
+      					@php
+	      					$costoTotalFleteGlobal = number_format($costoTotalFleteGlobal, 2, ",", ".");
+	      				@endphp
+      					<strong class="text-danger">$</strong>  {{ $costoTotalFleteGlobal }}</label></td>
+      			</tr>
+      			<tr>
+      				<td><label class="text-success">Total precio Usd</label></td>
+      				@php
+      					$precioTotalGlobal = number_format($precioTotalGlobal, 2, ",", ".");
+      				@endphp
+      				<td><label class="text-success"><strong class="text-danger">$</strong>  {{ $precioTotalGlobal }}</label></td>
+      			</tr>
       		</table>
       	</div>
   	</div>

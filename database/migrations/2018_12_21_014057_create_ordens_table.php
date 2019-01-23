@@ -19,6 +19,14 @@ class CreateOrdensTable extends Migration
             $table->unsignedInteger('estado_id');
             $table->unsignedInteger('convencion_id');
             $table->decimal('Trm');
+
+            $table->decimal('precioTotalGlobal')->nullable();
+            $table->decimal('totalValorArancelCal')->nullable();
+            $table->decimal('totalEmpaqueCal')->nullable();
+            $table->decimal('totalCintaCal')->nullable();
+            $table->decimal('totalCosto3Cal')->nullable();
+            $table->decimal('totalCostoUsdColCal')->nullable();
+
             $table->timestamps();
         });
     }

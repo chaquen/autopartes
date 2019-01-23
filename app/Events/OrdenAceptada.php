@@ -14,14 +14,17 @@ class OrdenAceptada
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $user;
+    public $orden;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($user, $orden)
     {
-        //
+        $this->user = $user;
+        $this->orden = $orden;
     }
 
     /**

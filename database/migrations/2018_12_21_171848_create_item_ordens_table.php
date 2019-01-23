@@ -29,6 +29,14 @@ class CreateItemOrdensTable extends Migration
             $table->decimal('pesoLb')->nullable();
             $table->decimal('pesoPromedio')->nullable();
             $table->decimal('costoUnitario')->nullable();
+
+            $table->decimal('precioTotalGlobal')->nullable();
+            $table->decimal('totalValorArancelCal')->nullable();
+            $table->decimal('totalEmpaqueCal')->nullable();
+            $table->decimal('totalCintaCal')->nullable();
+            $table->decimal('totalCosto3Cal')->nullable();
+            $table->decimal('totalCostoUsdColCal')->nullable();
+
             $table->decimal('valorPropuesto')->nullable();
             $table->decimal('margenUsa')->nullable();
 
@@ -42,7 +50,11 @@ class CreateItemOrdensTable extends Migration
             $table->string('facturaCop')->nullable();
             $table->date('fechaRealEntrega')->nullable();
             $table->date('fechaFactura')->nullable();
+
             $table->string('porcentajeArancel')->nullable();
+            $table->decimal('empaque')->nullable();
+            $table->decimal('cinta')->nullable();
+            $table->decimal('costo3')->nullable();
             $table->string('margenCop')->nullable();
             $table->string('TE')->nullable();
 

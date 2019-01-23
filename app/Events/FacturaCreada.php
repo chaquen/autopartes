@@ -10,21 +10,21 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class OrdenAsignada
+class FacturaCreada
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $user;
-    public  $ordenAsignada;
+    public $orden;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($user, $ordenAsignada)
+    public function __construct($user, $orden)
     {
-        $this->user = $user;
-        $this->orden =  $ordenAsignada;
+         $this->user = $user;
+        $this->orden = $orden;
     }
 
     /**

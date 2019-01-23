@@ -44,6 +44,9 @@
 
         				@elseif($orden->estado_id == 8 || $orden->estado_id == 9)
 	        				<td>Orden</td>
+
+	        			@elseif($orden->estado_id == 13 )
+	        				<td>Pendiente Factura</td>
 	        			@endif
 
 	        			

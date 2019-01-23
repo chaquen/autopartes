@@ -57,6 +57,8 @@ Route::group(['prefix'=>'trabajos','namespace'=>'Trabajos','middleware'=>'auth']
     Route::post('ordenes/actualizar','OrdenesController@update')->name('ordenes.update');
     //Se actualizan los datos de la Orden como fecha entrega y feche recepcion.
     Route::post('ordenes/ordenes.actualizarOrden','OrdenesController@actualizarOrden')->name('ordenes.actualizarOrden');
+    //Cerrar la Orden para poder Facturar
+     Route::post('ordenes/ordenes.actualizarParaFacturar','OrdenesController@actualizarParaFacturar')->name('ordenes.actualizarParaFacturar');
 
 
     Route::post('ordenes/cotizarOrden/{orden_id}','OrdenesController@cotizarOrden')->name('ordenes.cotizarOrden');
@@ -72,7 +74,14 @@ Route::group(['prefix'=>'trabajos','namespace'=>'Trabajos','middleware'=>'auth']
     Route::post('variables/{variable_id}', 'VariableController@update')->name('trabajos.variables.update');
 
     //Vista Facturación
+    Route::get('facturas', 'FacturasController@index')->name('facturas.index');
     Route::get('facturas/orden', 'FacturasController@facturasOrden')->name('facturas.orden');
+    Route::get('facturas/crearPorOrden/{orden_id}', 'FacturasController@crearFacturaOrden')->name('facturas.crearFacturaOrden');
+    Route::post('facturas/guardarDatosFacturaPorOrden', 'FacturasController@almacenarFacturaOrden')->name('facturas.almacenar.facturaOrden');
+    Route::post('facturas/genararFactura', 'FacturasController@generarFacturaOrden')->name('facturas.generar.facturaOrden');
+
+    Route::get('facturas/detalleFactura/{orden_id}','FacturasController@detalleFactura')->name('facturas.detalleFactura');
+    Route::get('facturas/misFacturas','FacturasController@misFacturas')->name('facturas.misFacturas');
 
 });
 

@@ -28,6 +28,12 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\SolicitudNegociacionOrden' => [
             'App\Listeners\EnviarDatosNegociacionOrden',
         ],
+        'App\Events\FacturaCreada' => [
+            'App\Listeners\EnviarDatosFacturaCreada',
+        ],
+        'App\Events\OrdenParaFacturar' => [
+            'App\Listeners\EnviarDatosOrdenParaFacturar',
+        ],
         'App\Events\NotificationEvent' =>[
             'App\Listeners\SendNotification',
         ],

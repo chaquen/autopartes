@@ -77,5 +77,9 @@ class EstadosOrdenTableSeeder extends Seeder
         $estadoOrden = new EstadoOrden;
         $estadoOrden->nombreEstado = "Negociacion Aceptada";
         $estadoOrden->save();
+
+        $estadoOrden = new EstadoOrden;
+        $estadoOrden->nombreEstado = "Facturada";
+        $estadoOrden->save();
     }
 }

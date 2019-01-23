@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Events\NotificationEvent;
 use App\Events\OrdenCreada;
+use App\Events\OrdenAsignada;
+use App\Events\OrdenAceptada;
+use App\Events\OrdenParaFacturar;
 use App\Sede;
 use App\Orden;
 use App\User;
@@ -77,7 +80,7 @@ class OrdenesController extends Controller
         ->join('ordens','item_ordens.orden_id','=','ordens.id')
         ->join('sedes','item_ordens.sede_id','=','sedes.id')
         ->where('ordens.id','=',$orden_id)
-        ->where('item_ordens.estadoItem_id','=',1)
+        ->whereIn('item_ordens.estadoItem_id',[1,4,5])
         ->get();
         //dd($detalleOrden);
         $variables = VariableEditable::all();
@@ -85,13 +88,15 @@ class OrdenesController extends Controller
         $detallePeso = DB::table('item_ordens')
         ->join('ordens','item_ordens.orden_id','ordens.id')
         ->join('sedes','item_ordens.sede_id','sedes.id')
+        ->where('item_ordens.estadoItem_id','=',1)
         ->where('ordens.id','=',$orden_id)
-        ->select('ordens.id','sede_id','sedes.nombre',
+        ->select('ordens.id','sede_id','sedes.nombre','ordens.convencion_id',
                 DB::raw('sum(pesoLb * cantidad) as PesoSede'),
                 DB::raw('sum(cantidad) as cantidadProductos'),
                 DB::raw('count(cantidad) as cantidadSede'))
         ->groupBy('sedes.id')
         ->get();
+        //dd($detallePeso);
         return view('trabajos.ordenes.detalleUsuario', compact('detalleOrden','variables','detallePeso','useRol'))->with('orden_id',$orden_id);
     }
 
@@ -163,7 +168,7 @@ class OrdenesController extends Controller
         $sinUsuario = Orden::select('ordens.id','ordens.estado_id','ordens.created_at','estado_ordens.nombreEstado','users.name')
         ->join('estado_ordens','ordens.estado_id','=','estado_ordens.id')
         ->join('users','ordens.user_id','=','users.id')
-        ->whereIn('ordens.estado_id',[4,8,2])
+        ->whereIn('ordens.estado_id',[8,2])
         //->where('ordens.estado_id','=',8)
         //->orwhere('ordens.estado_id','=',2)
         ->get();
@@ -189,14 +194,15 @@ class OrdenesController extends Controller
     //Detalle de las ordenes en estado PreCotizada sin Asignar ...........................................
     public function detalleCotizadas($orden_id)
     {
+        //dd($orden_id);
+
         $detalleOrden = itemOrden::select('sedes.nombre','item_ordens.marca','item_ordens.referencia','item_ordens.descripcion','item_ordens.cantidad','item_ordens.comentarios','item_ordens.orden_id')
         ->join('ordens','item_ordens.orden_id','=','ordens.id')
         ->join('sedes','item_ordens.sede_id','=','sedes.id')
-        ->join('historial_ordens','historial_ordens.orden_id','ordens.id')
-        ->where('ordens.id','=',$orden_id)->first()
+        ->where('item_ordens.orden_id','=',(int)$orden_id)
         ->get();
 
-        //dd($detalleOrden[0]->orden_id);
+        //dd($detalleOrden);
         $user = User::all();
         //dd($detalleOrden);
         return view('trabajos.ordenes.detalleCotizadas', compact('detalleOrden','user'));
@@ -244,6 +250,13 @@ class OrdenesController extends Controller
         //->where('ordens.estado_id','=',8)
         //->orwhere('ordens.estado_id','=',2)
         ->get();
+        //dd($request);
+        $user = User::select('email','name')
+        ->where('users.id','=',$request->usuarioAsignado)
+        ->get();
+        $ordenAsignada = (int)$request->ordenId;
+        //dd($user);
+        OrdenAsignada::dispatch($user, $ordenAsignada);
 
         //dd($UserGestiona);
         return view('trabajos.ordenes.cotizadaSinAsignar', compact('sinUsuario'))->with('flash','El Usuario fue asignado');
@@ -280,6 +293,7 @@ class OrdenesController extends Controller
         $detallePeso = DB::table('item_ordens')
         ->join('ordens','item_ordens.orden_id','ordens.id')
         ->join('sedes','item_ordens.sede_id','sedes.id')
+        ->where('item_ordens.estadoItem_id','=',1)
         ->where('ordens.id','=',$orden_id)
         ->select('ordens.id','sede_id','sedes.nombre',
                 DB::raw('sum(pesoLb * cantidad) as PesoSede'),
@@ -430,15 +444,9 @@ class OrdenesController extends Controller
             ->get();
             //dd($ordenAsignadas);
 
-            if($ordenAsignadas == '')
-            {   
-                dd('Viene nula la consulta');
-                return view('trabajos.ordenes.asignadas_a_mi');
-            }
-            else {
-                //dd('La consulta trae valores');
-               return view('trabajos.ordenes.asignadas_a_mi', compact('ordenAsignadas')); 
-            }
+            //dd('La consulta trae valores');
+            return view('trabajos.ordenes.asignadas_a_mi', compact('ordenAsignadas')); 
+            
         }
 
         //Validamos si el estado es 4 Cotizado y lo cambiamos a estado 8 Orden Sin Asignar
@@ -461,7 +469,13 @@ class OrdenesController extends Controller
             ->where('user_id','=',$user)
             ->get();
             //dd($ordenes);
-            return view('trabajos.ordenes.misOrdenes', compact('ordenes'));
+
+            $user = User::where('rol_id','=',1)
+            ->get();
+            //dd($user);
+
+            OrdenAceptada::dispatch($user,$orden);
+            return view('trabajos.ordenes.misOrdenes', compact('ordenes'))->with('flash','La orden fue aceptada');
             }
     }
 
@@ -546,6 +560,51 @@ class OrdenesController extends Controller
 
     public function actualizarOrden(Request $request)
     {   
+
+        foreach ($request['detalle_id'] as $key => $value)
+        {
+            //dd($request);
+
+            //Validamos cual item de la orden esta dividido
+            if(isset($request['itemDividido'.$value]))
+            {
+                //dd($request['itemDividido'].$value);
+
+                //Hallamos el tamaño o cantidad de item en los que se dividio
+                $tamaño = count($request['itemDividido'.$value]);
+                echo "El tamaño del arreglo es ".$tamaño;
+
+                //dd('detener');
+                //Vamos a crear los item segun la cantidad necesaria
+                foreach ($request['itemDividido'.$value] as $k => $values) {
+                    $cantidadItem = $values;
+
+                    //dd($request['pesoLb']);
+
+                    $item = new ItemOrden;
+
+                    $item->orden_id = $request->get('ordenId');
+                    $item->item_id = $value;
+                    $item->estadoItem_id = 1;
+                    $item->sede_id = $request['sedeId'][$key];
+                    $item->marca = $request['marca'][$key];
+                    $item->referencia = $request['referencia'][$key];
+                    $item->descripcion = $request['descripcion'][$key];
+                    $item->cantidad = $cantidadItem;
+                    $item->pesoLb = $request['pesoLb'][$key];
+                    $item->pesoPromedio = $request['pesoPromedio'][$key];
+                    $item->comentarios = $request['comentarios'][$key];
+                    $item->costoUnitario = $request['costoUnitario'][$key];
+                    $item->margenUsa = $request['margenUsa'][$key];
+                    $item->save();
+                }
+
+
+                $item = ItemOrden::where('id',$value)->first();
+                $item->estadoItem_id = 2;
+                $item->update();
+            }
+        }
         //dd($request);
         $arr=['diasEntregaProveedor' =>'','bodega' =>'','guiaInternacional' =>'','invoice' =>'','fechaInvoice' =>'','diasPrometidosCliente' =>'','guiaInternaDestino' =>'','facturaCop' =>'','fechaRealEntrega' =>'','fechaFactura' =>''];
         foreach ($request['diasEntregaProveedor'] as $key => $value)
@@ -644,11 +703,12 @@ class OrdenesController extends Controller
             }
         }
 
-        $item = ItemOrden::where('id',$request->detalleId)->first();
-        $item->estadoItem_id = 4;
-        $item->update();
+        //$item = ItemOrden::where('id',$request->detalleId)->first();
+        //$item->estadoItem_id = 4;
+        //$item->update();
 
         //dd($item);
+
 
         $orden_id = (int)$request->ordenId;
         
@@ -664,6 +724,7 @@ class OrdenesController extends Controller
         $detallePeso = DB::table('item_ordens')
         ->join('ordens','item_ordens.orden_id','ordens.id')
         ->join('sedes','item_ordens.sede_id','sedes.id')
+        ->where('item_ordens.estadoItem_id','=',1)
         ->where('ordens.id','=',$orden_id)
         ->select('ordens.id','sede_id','sedes.nombre',
                 DB::raw('sum(pesoLb * cantidad) as PesoSede'),
@@ -671,18 +732,18 @@ class OrdenesController extends Controller
                 DB::raw('count(cantidad) as cantidadSede'))
         ->groupBy('sedes.id')
         ->get();
-        //dd('LLego aqui');
+        //dd($detallePeso);
         return view('trabajos.ordenes.detalleAsignadaOrden', compact('detalleOrden','variables','detallePeso'))->with('orden_id',$orden_id);
     }
 
     public function actualizarItem(Request $request)
     {
-        //dd((int)$detalle_id);
+
         $item = ItemOrden::where('id',$request->detalleId)->first();
         $item->estadoItem_id = 4;
         $item->update();
 
-        dd($item);
+        //dd($item);
 
         $detalleOrden = itemOrden::select('ordens.id','ordens.Trm','ordens.convencion_id','sedes.nombre','item_ordens.estadoItem_id','item_ordens.sede_id','item_ordens.id','marca','referencia','descripcion','cantidad','comentarios','pesoLb','costoUnitario','margenUsa','diasEntregaProveedor','bodega','guiaInternacional','invoice','fechaInvoice','diasPrometidosCliente','guiaInternaDestino','facturaCop','fechaRealEntrega','fechaFactura')
         ->join('ordens','item_ordens.orden_id','=','ordens.id')
@@ -705,5 +766,50 @@ class OrdenesController extends Controller
         ->get();
         //dd('LLego aqui');
         return view('trabajos.ordenes.detalleAsignadaOrden', compact('detalleOrden','variables','detallePeso'))->with('orden_id',$orden_id);
+    }
+
+    //Funcion para ingresar los datos de proveedor y fechas de entrega
+    public function actualizarParaFacturar(Request $request)
+    {
+
+        
+        $Orden = Orden::where('id', (int)$request->get('orden_id'))->first();
+        $Orden->estado_id = 13;
+        $Orden->update(); 
+
+        foreach ($request['item_id'] as $key => $value)
+        {
+            //dd((int)$value);
+            $item = ItemOrden::where('id',(int)$value)->first();
+            $item->estadoItem_id = 4;
+            $item->update();
+        }
+
+        $user = auth()->user()->id;
+        //dd($user);
+        $ordenAsignadas = Orden::select('ordens.id','ordens.user_id','ordens.estado_id','ordens.created_at','historial_ordens.userAsignado_id','users.name')
+        ->join('historial_ordens','historial_ordens.orden_id','=','ordens.id')
+        ->join('users','ordens.user_id','=','users.id')
+        ->where('historial_ordens.userAsignado_id','=',$user)->first()
+        ->whereIn('ordens.estado_id',[3,6,9,12])
+        ->get();
+        //dd($ordenAsignadas);
+
+        $user = User::where('rol_id','=',1)
+        ->get();
+        //dd($user);
+        $orden = $request->orden_id;
+        OrdenParaFacturar::dispatch($user,$orden);
+
+        if($ordenAsignadas == 'null')
+        {   
+            dd('Viene nula la consulta');
+            return view('trabajos.ordenes.asignadas_a_mi');
+        }
+        else {
+            //dd('La consulta trae valores');
+           return view('trabajos.ordenes.asignadas_a_mi', compact('ordenAsignadas')); 
+        }
+
     }
 }

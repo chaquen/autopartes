@@ -262,7 +262,7 @@
 									      </div>
 									      <div class="modal-footer">
 									        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-									        <button type="button" class="btn btn-primary" onclick="crearDivisiones()">Aceptar</button>
+									        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="crearDivisiones()">Aceptar</button>
 									      </div>
 									    </div>
 						  			</div>
